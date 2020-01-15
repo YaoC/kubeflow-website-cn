@@ -1,73 +1,55 @@
 +++
 title = "Kubeflow"
-description = "An introduction to Kubeflow"
+description = "Kubeflow 介绍"
 weight = 1
 aliases = ["/docs/", "/docs/about/", "/docs/kubeflow/"]
 +++
 
-The Kubeflow project is dedicated to making deployments of machine learning (ML) 
-workflows on Kubernetes simple, portable and scalable. Our goal is not to 
-recreate other services, but to provide a straightforward way to deploy 
-best-of-breed open-source systems for ML to diverse infrastructures. Anywhere 
-you are running Kubernetes, you should be able to run Kubeflow.
+Kubeflow 项目致力于让机器学习（ML）工作流在 Kubernetes 上的部署更简单、轻便和可扩展。
+我们的目标不是重新创建其他服务，而是提供一种在不同的基础设施下都能直接部署机器学习各领域最佳开源系统的方式。
+无论在什么地方，只要你能运行 Kubernetes，就能运行 Kubeflow。
 
-## Getting started with Kubeflow
+## 开始使用 Kubeflow
 
-Read the [Kubeflow overview](/docs/started/kubeflow-overview/) for an
-introduction to the Kubeflow architecture and to see how you can use Kubeflow
-to manage your ML workflow.
+阅读 [Kubeflow 概览](/docs/started/kubeflow-overview/) 以了解 Kubeflow 的架构及如何使用 Kubeflow 去管理你的 ML 工作流。
 
-Follow the [getting-started guide](/docs/started/getting-started/) to set up
-your environment and install Kubeflow.
+跟随 [开始指南](/docs/started/getting-started/) 去设置你的环境并安装 Kubeflow。
 
-## What is Kubeflow?
+## 什么是 Kubeflow?
 
-Kubeflow is *the machine learning toolkit for Kubernetes*.
+Kubeflow 是 Kubernetes 的机器学习工具包。
 
-To use Kubeflow, the basic workflow is:
+要使用 Kubeflow，基本的流程如下：
 
-* Download and run the Kubeflow deployment binary.
-* Customize the resulting configuration files.
-* Run the specified script to deploy your containers to your specific
-  environment.
+* 下载并运行 Kubeflow 二进制安装文件
+* 自定义配置文件
+* 运行指定的脚本去部署你的容器到你特定的环境中
 
-You can adapt the configuration to choose the platforms and services that you 
-want to use for each stage of the ML workflow: data preparation, model training,
-prediction serving, and service management.
+你可以调整配置以选择你想要在 ML 工作流的各个阶段（如：数据准备、模型训练、模型预测以及服务管理）使用的平台和服务。
 
-You can choose to deploy your Kubernetes workloads locally, on-premises, or to 
-a cloud environment.
+你也可以选择将你的 Kubernetes 工作负载部署在本地、私有环境或云端环境。
 
-Read the [Kubeflow overview](/docs/started/kubeflow-overview/) for more details.
+阅读 [Kubeflow 概览](/docs/started/kubeflow-overview/) 以了解更多细节。
 
-## The Kubeflow mission
+## Kubeflow 的使命
 
-Our goal is to make scaling machine learning (ML) models and deploying them to
-production as simple as possible, by letting Kubernetes do what it's great at:
+我们的目标是让机器学习模型的伸缩扩展及部署到生产环境尽可能地简单，主要通过让 Kubernetes 做它所擅长的事情来实现：
 
-  * Easy, repeatable, portable deployments on a diverse infrastructure
-    (for example, experimenting on a laptop, then moving to an on-premises
-    cluster or to the cloud)
-  * Deploying and managing loosely-coupled microservices
-  * Scaling based on demand
+  * 可以简单、可重复及便携式地部署在不同的基础设施上（比如：在笔记本上实验，然后迁移到私有集群或公有云上）
+  * 可以部署和管理松耦合的微服务
+  * 可以按需伸缩扩展
 
-Because ML practitioners use a diverse set of tools, one of the key goals is to
-customize the stack based on user requirements (within reason) and let the
-system take care of the "boring stuff". While we have started with a narrow set
-of technologies, we are working with many different projects to include 
-additional tooling.
+因为机器学习从业者们要使用不同组合的工具，因此我们主要的目标之一是可以根据使用者的合理需求来自定义工具栈，并且让系统来处理那些繁杂琐碎的事务。
+虽然我们从有限的一些工具开始，但我们也在与很多不同的项目一起工作，从而可以包含更多额外的工具。
 
-Ultimately, we want to have a set of simple manifests that give you an easy to 
-use ML stack _anywhere_ Kubernetes is already running, and that can self 
-configure based on the cluster it deploys into.
+最终，我们希望提供一组简单的清单，它能让你在已经运行 Kubernetes 的地方很简单的使用机器学习技术栈，并且可以基于部署的集群自己去调整配置。
 
-## History
+## 历史
 
-Kubeflow started as an open sourcing of the way Google ran [TensorFlow](https://www.tensorflow.org/) internally, based on a pipeline called [TensorFlow Extended](https://www.tensorflow.org/tfx/). It began as just a simpler way to run TensorFlow jobs on Kubernetes, but has since expanded to be a multi-architecture, multi-cloud framework for running entire machine learning pipelines.
+Kubeflow 始于 Google 将其内部运行 [TensorFlow](https://www.tensorflow.org/) 的方式开源出来，基于一个叫 [TensorFlow Extended](https://www.tensorflow.org/tfx/) 的流水线。
+它开始只是一个将 TensorFlow jobs 运行在 Kubernetes 上的一种较简单的方式，但现在已经发展成为一个能运行整个机器学习流水线的多架构、多云框架。
 
-## Getting involved
+## 参与贡献
 
-There are many ways to contribute to Kubeflow, and we welcome contributions! 
-Read the [contributor's guide](/docs/about/contributing) to get started on the 
-code, and get to know the community in the 
-[community guide](/docs/about/community).
+有很多种方式可以为 Kubeflow 项目做贡献，我们十分欢迎大家做贡献！
+阅读 [贡献者指南](/docs/about/contributing) 开始从源码着手贡献，通过 [社区指南](/docs/about/community) 来了解 Kubeflow 社区。
