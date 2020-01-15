@@ -1,46 +1,34 @@
 +++
-title =  "Docs"
-description = "Information on the Kubeflow docs and how to contribute to them"
+title =  "文档"
+description = "关于 Kubeflow 文档的信息以及如何对文档做贡献"
 weight = 6
 aliases = ["/docs/docs/"]
 +++
 
-Welcome to the Kubeflow documentation!
+欢迎来到 Kubeflow 的文档！
 
-## Introduction
+## 介绍
 
-The Kubeflow docs are published at 
-[www.kubeflow.org](https://www.kubeflow.org/).
+Kubeflow 文档发布在 [www.kubeflow.org](https://www.kubeflow.org/)。
 
-The source for the docs is in the 
-[kubeflow/website repo](https://github.com/kubeflow/website/) on GitHub.
-We use [Hugo](https://gohugo.io/) to format and generate our website, and
-[Netlify](https://www.netlify.com/) to manage the deployment of the site.
+文档源码托管在 GitHub 的 [kubeflow/website 仓库](https://github.com/kubeflow/website/)。
+我们使用 [Hugo](https://gohugo.io/) 来格式化和生成整个网站，并使用 [Netlify](https://www.netlify.com/) 来管理站点的部署。
 
-## Versioning
+## 版本化
 
-www.kubeflow.org points to the **master** branch of the docs. You can access
-other versions by clicking the version dropdown at top right of the website
-menu bar:
+www.kubeflow.org 指向的是文档的 **master** 分支。你可以通过点击网站导航条右上角的版本下拉菜单访问其他的版本：
 
 <img src="/docs/images/version-dropdown.png" 
   alt="Version dropdown"
   style="width:30%;"
   class="mt-3 mb-3 border border-info rounded">
 
-We create a new branch of the docs for each stable release of Kubeflow. 
-For example, the docs for the v0.2 stable release are on published on the
-[v0.2 website](https://v0-2.kubeflow.org/docs/about/kubeflow/), which
-corresponds to the
-[v0.2-branch](https://github.com/kubeflow/website/tree/v0.2-branch) on
-GitHub.
+我们为 Kubeflow 发布的每个稳定版本都创建了新的文档分支。
+比如，v0.2 稳定版发布在 [v0.2 website](https://v0-2.kubeflow.org/docs/about/kubeflow/)，对应 GitHub 的 [v0.2-branch](https://github.com/kubeflow/website/tree/v0.2-branch)。
 
-## Contributing to the docs
+## 对文档做贡献
 
-We welcome updates to the docs! Please help us make them better. Small fixes,
-typos, bug fixes, plugging gaps&mdash;all are useful. 
+我们欢迎大家来更新文档！请帮助我们让它们变得更好。小的改正、错别字、bug 修复、填补空缺 —— 所有这些都很有用。
 
-* For help with getting started, take a look at the 
-  [README](https://github.com/kubeflow/website/blob/master/README.md).
-* For guidance on writing effective documentation, see the 
-  [style guide](/docs/about/style-guide/).
+* 想要知道如何开始，可以看一下 [README](https://github.com/kubeflow/website/blob/master/README.md)
+* 想要知道如何写出有效的文档，可以看 [style guide](/docs/about/style-guide/)

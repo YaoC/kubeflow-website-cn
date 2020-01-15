@@ -196,6 +196,8 @@ no = 'Sorry to hear that. Please <a href="https://github.com/kubeflow/website/is
 	icon = "fa fa-calendar"
         desc = "Discussion and help from your fellow users"
 
+[markup.goldmark.renderer]
+unsafe = true
 
 # Docsy: "Developer" links will show on right side of footer and in the community page if you have one.
 #[[params.links.developer]]
