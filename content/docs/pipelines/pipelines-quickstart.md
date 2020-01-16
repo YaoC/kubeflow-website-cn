@@ -1,188 +1,145 @@
 +++
-title = "Pipelines Quickstart"
-description = "Getting started with Kubeflow Pipelines"
+title = "Pipelines 快速入门"
+description = "Kubeflow Pipelines 入门"
 weight = 10
 +++
 
-Use this guide if you want to get a simple pipeline running quickly in
-Kubeflow Pipelines. If you need a more in-depth guide, see the
-[end-to-end tutorial](/docs/gke/pipelines-tutorial/).
+参照本指南你可以在 Kubeflow Pipelines 中快速创建一个简单的流水线。
+如果需要更加深入了解 Kubeflow Pipelines， 请查看[端到端的教程](/docs/gke/pipelines-tutorial/)。
 
-* This quickstart guide shows you how to use one of the samples that come with 
-  the Kubeflow Pipelines installation and are visible on the Kubeflow Pipelines
-  user interface (UI). You can use this guide as an introduction to the 
-  Kubeflow Pipelines UI.
-* The end-to-end tutorial shows you how to prepare and compile a pipeline, 
-  upload it to Kubeflow Pipelines, then run it.
+* 你可以在 Kubeflow Pipelines 的用户界面上看到几个安装时附带的示例，本指南将向你展示如何使用其中的一个示例。因此本指南也可以看作是 Kubeflow Pipelines UI 的介绍。
+* 端到端的教程介绍了如何编写、编译一个流水线然后把它上传到 Kubeflow Pipelines 运行的全过程。
 
-## Deploy Kubeflow and open the pipelines UI
+## 部署 Kubeflow 然后进入流水线页面
 
-Follow these steps to deploy Kubeflow and open the pipelines dashboard:
+按照以下步骤部署 Kubeflow 后打开流水线仪表盘页面
 
-1. Follow the guide to [deploying Kubeflow on GCP](/docs/gke/deploy/).
+1. 参照该指南 [在 GCP 中部署 Kubeflow](/docs/gke/deploy/)。
 
     {{% pipelines-compatibility %}} 
 
-1. When Kubeflow is running, access the Kubeflow UI at a URL of the form
-  `https://<deployment-name>.endpoints.<project>.cloud.goog/`, as described in the setup
-  guide. The Kubeflow UI looks like this:
+1. 根据 Kubeflow 安装指南启动 Kubeflow 后， 通过 `https://<deployment-name>.endpoints.<project>.cloud.goog/` 形式的 URL 进入 Kubeflow UI。 Kubeflow UI 如下图所示：
   <img src="/docs/images/central-ui.png" 
     alt="Kubeflow UI"
     class="mt-3 mb-3 border border-info rounded">
 
-    If you skipped the Cloud IAP option when deploying Kubeflow, or if you 
-    haven't yet set up your Kubeflow endpoint, you can access Kubeflow via 
-    `kubectl` and port-forwarding:
+    如果在部署 Kubeflow 时跳过了 Cloud IAP 选项或是还没有暴露 Kubeflow 端点，那么你需要通过 `kubectl` 配置端口转发后才能访问 Kubeflow：
     
-    1. Install `kubectl` if you haven't already done so, by running the 
-      following command on the command line: 
-      `gcloud components install kubectl`. For more information, see the 
+    1. 如果没有安装 `kubectl` 则通过以下命令进行安装： 
+      `gcloud components install kubectl`。 获取更多相关信息请查看 
       [`kubectl` 
-      documentation](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
+      文档](https://kubernetes.io/docs/tasks/tools/install-kubectl/)。
 
-    1. Run ```kubectl port-forward -n kubeflow svc/ml-pipeline-ui 8080:80``` and go to `http://localhost:8080/`.
+    1. 执行 ```kubectl port-forward -n kubeflow svc/ml-pipeline-ui 8080:80``` 后访问 `http://localhost:8080/`。
 
-1. Click **Pipelines** to access the pipelines UI. The pipelines UI looks like
-  this:
+1. 点击 **Pipelines** 按钮进入如下图所示的流水线主界面：
   <img src="/docs/images/pipelines-ui.png" 
     alt="Pipelines UI"
     class="mt-3 mb-3 border border-info rounded">
 
-## Run a basic pipeline
+## 运行基础的流水线
 
-The pipelines UI offers a few samples that you can use to try out
-pipelines quickly. The steps below show you how to run a basic sample that
-includes some Python operations, but doesn't include a machine learning (ML) 
-workload:
+流水线主界面中预置的几个示例可让你快速上手。以下步骤将展示如何运行一个基础的示例。该示例仅包含一些 Python 操作，并未涉及机器学习（ML）的内容。
 
-1. Click the name of the sample, **\[Sample\] Basic - Parallel Execution**, on the pipelines 
-  UI:
+1. 在流水线页面点击 **\[Sample\] Basic - Parallel Execution** 示例的名字：
   <img src="/docs/images/click-pipeline-sample.png" 
     alt="Pipelines UI"
     class="mt-3 mb-3 border border-info rounded">
 
-1. Click **Create experiment**:
+1. 点击 **Create experiment**：
   <img src="/docs/images/pipelines-start-experiment.png" 
     alt="Starting an experiment on the pipelines UI"
     class="mt-3 mb-3 border border-info rounded">
 
-1. Follow the prompts to create an **experiment** and then create a **run**. 
-  The sample supplies default values for all the parameters you need. The 
-  following screenshot assumes you've already created an experiment named
-  _My experiment_ and are now creating a run named _My first run_:
+1. 根据提示先创建一个 **实验**，然后再创建一个 **run**。该示例提供了用户所需的所有参数的缺省值。下面的截图假定你已经创建了一个名叫 _My experiment_ 的实验后正在创建名叫 _My first run_ 的 run：
   <img src="/docs/images/pipelines-start-run.png" 
     alt="Creating a run on the pipelines UI"
     class="mt-3 mb-3 border border-info rounded">
 
-1. Click **Start** to create the run.
-1. Click the name of the run on the experiments dashboard:
+1. 点击 **Start** 创建 run。
+1. 在实验仪表盘上点击 run 的名字：
   <img src="/docs/images/pipelines-experiments-dashboard.png" 
     alt="Experiments dashboard on the pipelines UI"
     class="mt-3 mb-3 border border-info rounded">
 
-1. Explore the graph and other aspects of your run by clicking on the 
-  components of the graph and the other UI elements:
+1. 点击流水线图的各个组件和页面中的其他元素来查看流水线图和 run 的其它内容：
   <img src="/docs/images/pipelines-basic-run.png" 
     alt="Run results on the pipelines UI"
     class="mt-3 mb-3 border border-info rounded">
 
-You can find [the source code for the basic parallel join sample](https://github.com/kubeflow/pipelines/blob/master/samples/core/parallel_join/parallel_join.py)
-in the Kubeflow Pipelines repo.
+你可以在 Kubeflow Pipelines 代码仓库中查看 [the basic parallel join sample 的源码](https://github.com/kubeflow/pipelines/blob/master/samples/core/parallel_join/parallel_join.py)。
 
-## Run an ML pipeline
+## 运行机器学习流水线
 
-This section shows you how to run the XGBoost sample available
-from the pipelines UI. Unlike the basic sample described above, the
-XGBoost sample does include ML components. Before running this sample, 
-you need to set up some GCP services for use by the sample.
+本节介绍如何运行流水线用户界面中提供的 XGBoost 示例。与上述基础示例不同，XGBoost 示例中包含了一些机器学习组件。
+在运行本示例之前你需要先创建好一些 GCP 服务供其使用。
 
-Follow these steps to set up the necessary GCP services and run the sample:
+按照以下步骤创建必要的 GCP 服务并运行示例：
 
-1. In addition to the standard GCP APIs that you need for Kubeflow (see the
-  [GCP setup guide](/docs/gke/deploy/project-setup)), ensure that the 
-  following APIs are enabled:
+1. 除了 Kubeflow 需要用到的基本的 GCP API 外（参考
+  [GCP 安装指南](/docs/gke/deploy/project-setup)）流水线还需要以下 API：
 
     * [Cloud Storage](https://console.cloud.google.com/apis/library/storage-component.googleapis.com)
     * [Dataproc](https://console.cloud.google.com/apis/library/dataproc.googleapis.com)
 
-1. Create a 
+1. 创建一个 
   [Cloud Storage bucket](https://console.cloud.google.com/storage/create-bucket) 
-  to hold the results of the pipeline run.
+  来存储流水线运行的结果。
 
-  * Your *bucket name* must be unique across all of Cloud Storage.
-  * Each time you create a new run for this pipeline, Kubeflow creates a unique
-    directory within the output bucket, so the output of each run does not
-    override the output of the previous run.
+  * *bucket 名称* 必须保证在 Cloud Storage 中唯一。
+  * 流水线中每创建一个 run， Kubeflow 就在 bucket 中创建一个唯一的目录，因此先前完成的 run 的输出结果并不会被之后完成的 run 的输出结果所覆盖。
 
-1. Click the name of the sample, 
-  **\[Sample\] ML - XGBoost - Training with Confusion Matrix**, on the pipelines 
-  UI:
+1. 在流水线页面点击
+  **\[Sample\] ML - XGBoost - Training with Confusion Matrix** 示例的名字：
   <img src="/docs/images/click-xgboost-sample.png" 
     alt="XGBoost sample on the pipelines UI"
     class="mt-3 mb-3 border border-info rounded">
 
-1. Click **Create experiment**.
-1. Follow the prompts to create an **experiment** and then create a **run**.
-  Supply the following **run parameters**:
+1. 点击 **Create experiment**.
+1. 根据提示创建一个 **实验**，之后再创建一个 **run**。
+  输入以下 **run parameters**:
 
-  * **output:** The Cloud Storage bucket that you created earlier to hold the
-    results of the pipeline run.
-  * **project:** Your GCP project ID.
+  * **output:** 先前创建的用于存储流水线 run 输出结果的 Cloud Storage bucket。
+  * **project:** 你的 GCP 项目 ID。
 
-    The sample supplies the values for the other parameters:
+    该示例已经提供了其它参数的值：
 
-  * region: The GCP geographical region in which the training and evaluation
-    data is stored.
-  * train-data: Cloud Storage path to the training data.
-  * eval-data: Cloud Storage path to the evaluation data.
-  * schema: Cloud Storage path to a JSON file describing the format of the
-    CSV files that contain the training and evaluation data.
-  * target: Column name of the target variable.
-  * rounds: The number of rounds for XGBoost training.
-  * workers: Number of workers used for distributed training.
-  * true-label: Column to be used for text representation of the label output
-    by the model.
+  * region: 存储训练和评估用的数据的 GCP 地理区域。
+  * train-data: 训练数据的 Cloud Storage 路径。
+  * eval-data: 评估数据的 Cloud Storage 路径。
+  * schema: 描述存储训练和评估数据的 CSV 文件格式的 JSON 文件的 Cloud Storage 路径。
+  * target: 目标变量的列名。
+  * rounds: XGBoost 训练的迭代轮数。
+  * workers: 分布式训练的节点数。
+  * true-label: 模型输出标签对应的文本信息所在的列。
 
-    The following partial screenshot shows the run parameters, including the 
-    two parameters that you must supply:
+    下面的屏幕部分截图展示了 run 的参数，其中包括两个用户必须提供的参数：
     <img src="/docs/images/pipelines-start-xgboost-run.png" 
       alt="Starting the XGBoost run on the pipelines UI"
       class="mt-3 mb-3 border border-info rounded">
 
-1. Click **Start** to create the run.
-1. Click the name of the run on the experiments dashboard.
-1. Explore the graph and other aspects of your run by clicking on the 
-  components of the graph and the other UI elements. The following screenshot
-  shows the graph when the pipeline has finished running:
+1. 点击 **Start** 创建 run。
+1. 在实验仪表盘上点击 run 的名字。
+1. 点击流水线图的各个组件和页面中的其他元素来查看流水线图和 run 的其它内容：
     <img src="/docs/images/pipelines-xgboost-graph.png" 
       alt="XGBoost results on the pipelines UI"
       class="mt-3 mb-3 border border-info rounded">
 
-You can find the source code for the XGBoost training sample in the 
-[Kubeflow Pipelines 
-repo](https://github.com/kubeflow/pipelines/tree/master/samples/core/xgboost_training_cm).
+你可以在 [Kubeflow Pipelines 
+代码仓库](https://github.com/kubeflow/pipelines/tree/master/samples/core/xgboost_training_cm) 中查看 XGBoost 训练示例的源代码。
 
-## Clean up your GCP environment
+## 清理你的 GCP 环境
 
-As you work through this guide, your project uses billable components of
-GCP. To minimise costs, follow these steps to clean up resources when you've 
-finished with them:
+本指南使用了付费的 GCP 组件。在你按照本指南运行完示例后需要按照以下步骤清理相关资源以尽可能降低费用：
 
-1. Visit [Deployment Manager](https://console.cloud.google.com/dm) to delete 
-  your deployment and related resources.
-1. Delete your [Cloud Storage bucket](https://console.cloud.google.com/storage) 
-  when you've finished examining the output of the pipeline.
+1. 登录 [Deployment Manager](https://console.cloud.google.com/dm) 删除你的部署和相关资源。
+1. 在检查过流水线的输出后删除 [Cloud Storage bucket](https://console.cloud.google.com/storage)。
 
-## Next steps
+## 后续
 
-* Learn more about the 
-  [important concepts](/docs/pipelines/concepts/) in Kubeflow
-  Pipelines.
-* Follow the [end-to-end tutorial](/docs/gke/pipelines-tutorial/) 
-  using an MNIST machine-learning model.
-* This page showed you how to run some of the examples supplied in the Kubeflow
-  Pipelines UI. Next, you may want to run a pipeline from a notebook, or compile 
-  and run a sample from the code. See the guide to experimenting with
-  [the Kubeflow Pipelines samples](/docs/pipelines/tutorials/build-pipeline/).
-* Build your own machine-learning pipelines with the [Kubeflow Pipelines 
-  SDK](/docs/pipelines/sdk/sdk-overview/).
+* 了解更多 Kubeflow Pipelines 的 [重要概念](/docs/pipelines/concepts/)。
+* 参照 [端到端教程](/docs/gke/pipelines-tutorial/) 用 MNIST 数据集训练一个机器学习模型。
+* 本页面现你展示了如何运行 Kubeflow Pipelines UI 中预置的示例。
+  接下来你可以使用教程并结合 [Kubeflow Pipelines 示例](/docs/pipelines/tutorials/build-pipeline/) 来在 notebook 中运行流水线或是用代码编译并运行示例。
+* 使用 [Kubeflow Pipelines 
+  SDK](/docs/pipelines/sdk/sdk-overview/) 来运行你自己的机器学习流水线。
