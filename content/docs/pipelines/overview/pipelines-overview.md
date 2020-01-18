@@ -1,81 +1,64 @@
 +++
-title = "Overview of Kubeflow Pipelines"
-description = "Understanding the goals and main concepts of Kubeflow Pipelines"
+title = "Kubeflow Pipelines 概览"
+description = "理解 Kubeflow Pipelines 的目标和主要概念"
 weight = 10
 +++
 
-Kubeflow Pipelines is a platform for building and deploying portable, 
-scalable machine learning (ML) workflows based on Docker containers.
+Kubeflow Pipelines 是一个基于 Docker 容器，用于构建和部署可移植可扩展的机器学习（ML）工作流的平台。
 
-## Quickstart
+## 快速入门
 
-Run your first pipeline by following the 
-[pipelines quickstart guide](/docs/pipelines/pipelines-quickstart).
+按照 [pipelines 快速入门指南](/docs/pipelines/pipelines-quickstart) 运行你的第一个流水线。
 
-## What is Kubeflow Pipelines?
+## 什么是 Kubeflow Pipelines?
 
-The Kubeflow Pipelines platform consists of:
+Kubeflow Pipelines 平台包括：
 
-* A user interface (UI) for managing and tracking experiments, jobs, and runs.
-* An engine for scheduling multi-step ML workflows.
-* An SDK for defining and manipulating pipelines and components.
-* Notebooks for interacting with the system using the SDK.
+* 一个用于管理跟踪实验、作业和 run 的交互界面。
+* 一个多阶段机器学习工作流调度的引擎。
+* 一个用于定义、操作流水线和组件的SDK。
+* 使用 SDK 与系统交互的 Notebooks。
 
-The following are the goals of Kubeflow Pipelines:
+以下是 Kubeflow Pipelines 的目标：
 
-* End-to-end orchestration: enabling and simplifying the orchestration of
-  machine learning pipelines.
-* Easy experimentation: making it easy for you to try numerous ideas and 
-  techniques and manage your various trials/experiments.
-* Easy re-use: enabling you to re-use components and pipelines to quickly 
-  create end-to-end solutions without having to rebuild each time.
+* 端到端编排：提供并简化机器学习流水线的编排。
+* 轻松进行实验：让你轻松尝试各种想法和技术，同时管理各种试验/实验。
+* 轻松复用：让你能够复用组件和管道以快速创建端到端解决方案，而不必每次都进行重建。
 
-In 
-[Kubeflow v0.1.3 and later](https://github.com/kubeflow/pipelines/releases/tag/0.1.3),
-Kubeflow Pipelines is one of the Kubeflow core components. It's automatically deployed during Kubeflow deployment.
+在 
+[Kubeflow v0.1.3 或更高的版本](https://github.com/kubeflow/pipelines/releases/tag/0.1.3) 里，
+Kubeflow Pipelines 是 Kubeflow 核心组件之一。 它在 Kubeflow 部署时自动部署。
 
 {{% pipelines-compatibility %}}
 
-## What is a pipeline?
+## 什么是流水线？
 
-A _pipeline_ is a description of an ML workflow, including all of the components 
-in the workflow and how they combine in the form of a graph. (See the
-screenshot below showing an example of a pipeline graph.) The pipeline
-includes the definition of the inputs (parameters) required to run the pipeline 
-and the inputs and outputs of each component.
+_流水线_ 是机器学习工作流的描述，包括了工作流中所有的组件以及它们如何以图形形式组合。（下面的截图展示了一个流水线图的示例。）
+流水线包括了运行所需的输入（参数）定义以及每个组件的输入和输出。
 
-After developing your pipeline, you can upload and share it on the 
-Kubeflow Pipelines UI.
+开发完你的流水线后你可以通过 Kubeflow Pipelines UI 上传并分享它。
 
-A _pipeline component_ is a self-contained set of user code, packaged as a 
-[Docker image](https://docs.docker.com/get-started/), that 
-performs one step in the pipeline. For example, a component can be responsible
-for data preprocessing, data transformation, model training, and so on.
+_流水线组件_ 是一组独立的用户代码打包成 Docker [镜像](https://docs.docker.com/get-started/)，作为在流水线中执行的一个步骤。例如，一个组件可以负责数据预处理，数据变换或是模型训练等。
 
-See the conceptual guides to [pipelines](/docs/pipelines/concepts/pipeline/)
-and [components](/docs/pipelines/concepts/component/).
+请参阅 [流水线](/docs/pipelines/concepts/pipeline/)
+和 [组件](/docs/pipelines/concepts/component/) 的概念指南。
 
-## Example of a pipeline
+## 流水线示例
 
-The screenshots and code below show the `xgboost-training-cm.py` pipeline, which
-creates an XGBoost model using structured data in CSV format. You can see the
-source code and other information about the pipeline on
-[GitHub](https://github.com/kubeflow/pipelines/tree/master/samples/core/xgboost_training_cm).
+下面的屏幕截图和代码展示了 `xgboost-training-cm.py` 流水线，它使用 CSV 格式的结构化数据创建了一个 XGBoost 模型。
+你可以在 [GitHub](https://github.com/kubeflow/pipelines/tree/master/samples/core/xgboost_training_cm) 上查看该流水线的源代码和其它相关信息。
 
-### The runtime execution graph of the pipeline
+### 流水线的运行时执行图
 
-The screenshot below shows the example pipeline's runtime execution graph in the
-Kubeflow Pipelines UI:
+下面的屏幕截图展示了 Kubeflow Pipelines UI 中流水线示例的运行时执行图：
 
 <img src="/docs/images/pipelines-xgboost-graph.png" 
   alt="XGBoost results on the pipelines UI"
   class="mt-3 mb-3 border border-info rounded">
 
-### The Python code that represents the pipeline
+### 定义流水线的 Python 代码
 
-Below is an extract from the Python code that defines the 
-`xgboost-training-cm.py` pipeline. You can see the full code on 
-[GitHub](https://github.com/kubeflow/pipelines/tree/master/samples/core/xgboost_training_cm).
+以下是定义 `xgboost-training-cm.py` 流水线的 Python 代码中的一部分。你可以在 [GitHub](https://github.com/kubeflow/pipelines/tree/master/samples/core/xgboost_training_cm) 上查看完整的代码。
 
 ```python
 @dsl.pipeline(
@@ -181,104 +164,65 @@ def xgb_train_pipeline(
         gcp.use_gcp_secret('user-gcp-sa'))
 ```
 
-### Pipeline input data on the Kubeflow Pipelines UI
+### Kubeflow Pipelines UI 上的流水线输入数据
 
-The partial screenshot below shows the Kubeflow Pipelines UI for kicking off a 
-run of the pipeline. The pipeline definition in your code determines which 
-parameters appear in the UI form. The pipeline definition can also set default 
-values for the parameters: 
+以下部分的屏幕截图展示了启动流水线的一次 run 的 Kubeflow Pipelines UI。你代码中的流水线定义决定了哪些参数会出现在 UI 表单中。流水线的定义里还可以设置参数的缺省值：
 
 <img src="/docs/images/pipelines-start-xgboost-run.png" 
   alt="Starting the XGBoost run on the pipelines UI"
   class="mt-3 mb-3 border border-info rounded">
 
-### Outputs from the pipeline
+### 流水线的输出
 
-The following screenshots show examples of the pipeline output visible on
-the Kubeflow Pipelines UI.
+下面的屏幕截图展示了在 Kubeflow Pipelines UI 上可见的流水线输出示例。
 
-Prediction results:
+预测结果：
 
 <img src="/docs/images/predict.png" 
   alt="Prediction output"
   class="mt-3 mb-3 p-3 border border-info rounded">
 
-Confusion matrix:
+混淆矩阵：
 
 <img src="/docs/images/cm.png" 
   alt="Confusion matrix"
   class="mt-3 mb-3 p-3 border border-info rounded">
 
-Receiver operating characteristics (ROC) curve:
+接收者操作特征（ROC）曲线：
 
 <img src="/docs/images/roc.png" 
   alt="ROC"
   class="mt-3 mb-3 p-3 border border-info rounded">
 
-## Architectural overview
+## 架构概览
 
 <img src="/docs/images/pipelines-architecture.png" 
   alt="Pipelines architectural diagram"
   class="mt-3 mb-3 p-3 border border-info rounded">
 
-At a high level, the execution of a pipeline proceeds as follows: 
+从上层看，流水线的执行过程如下：
 
-* **Python SDK**: You create components or specify a pipeline using the Kubeflow
-  Pipelines domain-specific language 
-  ([DSL](https://github.com/kubeflow/pipelines/tree/master/sdk/python/kfp/dsl)).
-* **DSL compiler**: The
-  [DSL compiler](https://github.com/kubeflow/pipelines/tree/master/sdk/python/kfp/compiler)
-  transforms your pipeline's Python code into a static configuration (YAML).
-* **Pipeline Service**: You call the Pipeline Service to create a
-  pipeline run from the static configuration. 
-* **Kubernetes resources**: The Pipeline Service calls the Kubernetes API
-  server to create the necessary Kubernetes resources
-  ([CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/))
-  to run the pipeline.   
-* **Orchestration controllers**: A set of orchestration controllers
-  execute the containers needed to complete the pipeline execution specified
-  by the Kubernetes resources
-  ([CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)).
-  The containers execute within Kubernetes Pods on virtual machines. An
-  example controller is the **[Argo
-  Workflow**](https://github.com/argoproj/argo) controller, which
-  orchestrates task-driven workflows. 
-* **Artifact storage**: The Pods store two kinds of data: 
+* **Python SDK**：你可以使用 Kubeflow
+  Pipelines 领域特定语言（[DSL](https://github.com/kubeflow/pipelines/tree/master/sdk/python/kfp/dsl)）创建组件或者指定一个流水线。
+* **DSL 编译器**：[DSL 编译器](https://github.com/kubeflow/pipelines/tree/master/sdk/python/kfp/compiler) 把你的流水线 Python 代码转变成一个静态配置（YAML）。
+* **Pipeline Service**：你调用 Pipeline Service 通过静态配置创建一个流水线的 run。
+* **Kubernetes 资源**：Pipeline Service 调用 Kubernetes API
+  服务器创建必要的 Kubernetes 资源（[CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)）来运行流水线。  
+* **编排控制器**：一组编排控制器执行 Kubernetes 资源（[CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)）指定的流水线执行需要完成的容器。容器在虚拟机上的 Kubernetes Pods 中执行。一个控制器的例子是 [**Argo Workflow**](https://github.com/argoproj/argo) 控制器，它可以编排任务驱动的工作流。
+* **构件存储**：Pods 存储两种类型的数据： 
 
-  * **Metadata:** Experiments, jobs, runs, etc. Also single scalar metrics, 
-    generally aggregated for the purposes of sorting and filtering. 
-    Kubeflow Pipelines stores the metadata in a MySQL database.
-  * **Artifacts:** Pipeline packages, views, etc. Also
-    large-scale metrics like time series, usually used for investigating an 
-    individual run's performance and for debugging. Kubeflow Pipelines 
-    stores the artifacts in an artifact store like
-    [Minio server](https://docs.minio.io/) or 
-    [Cloud Storage](https://cloud.google.com/storage/docs/).
+  * **元数据：** 实验、作业和 run 等。还有单独的标量指标，通常为了排序和过滤而汇总到一起。Kubeflow Pipelines 将元数据存储到 MySQL 数据库中。
+  * **构件：** 流水线打包、视图等。还有像时间序列等大规模的指标，通常用于探究各个运行的 run 的性能或是调试。Kubeflow Pipelines 将这些构件存储在诸如 [Minio server](https://docs.minio.io/) 或 [Cloud Storage](https://cloud.google.com/storage/docs/) 的构件仓库中。
 
-    The MySQL database and the Minio server are both backed by the Kubernetes
-    [PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#types-of-persistent-volumes)
-    (PV) subsystem. 
+    MySQL 数据库和 Minio 服务器都由 Kubernetes [PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#types-of-persistent-volumes)（PV）子系统支持。
 
-* **Persistence agent and ML metadata**: The Pipeline Persistence Agent
-  watches the Kubernetes resources created by the Pipeline Service and
-  persists the state of these resources in the ML Metadata Service. The
-  Pipeline Persistence Agent records the set of containers that executed as
-  well as their inputs and outputs. The input/output consists of either
-  container parameters or data artifact URIs. 
-* **Pipeline web server**: The Pipeline web server gathers data from various
-  services to display relevant views: the list of pipelines currently running,
-  the history of pipeline execution, the list of data artifacts, debugging
-  information about individual pipeline runs, execution status about individual
-  pipeline runs.
+* **持久化代理和机器学习元数据**：流水线持久化代理监听 Kubernetes 创建资源并将这些资源的状态持久化存储到机器学习元数据服务中。
+  流水线持久化同时也记录已经执行的容器和它们的输入输出。输入输出既包括容器的参数也包括数据构件的 URL。
+* **流水线 web 服务器**：流水线 web 服务器从各种服务收集数据并显示相关视图：当前运行中的流水线的列表，流水线执行的历史，数据构件的列表，各个运行的 run 的调试信息，各个运行的 run 的执行状态。
 
-## Next steps
+## 后续
 
-* Follow the 
-  [pipelines quickstart guide](/docs/pipelines/pipelines-quickstart) to 
-  deploy Kubeflow and run a sample pipeline directly from the 
-  Kubeflow Pipelines UI.
-* Build machine-learning pipelines with the [Kubeflow Pipelines 
-  SDK](/docs/pipelines/sdk/sdk-overview/).
-* Follow the full guide to experimenting with
-  [the Kubeflow Pipelines samples](/docs/pipelines/tutorials/build-pipeline/).
+* 根据 [流水线快速入门指南](/docs/pipelines/pipelines-quickstart) 部署 Kubeflow 并从 Kubeflow Pipelines UI 直接运行一个流水线示例。
+* 使用 [Kubeflow Pipelines SDK](/docs/pipelines/sdk/sdk-overview/) 构建机器学习流水线。
+* 按照完整的指南使用 [the Kubeflow Pipelines 示例](/docs/pipelines/tutorials/build-pipeline/) 进行实验。
   
