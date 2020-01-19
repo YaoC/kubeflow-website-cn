@@ -1,66 +1,44 @@
 +++
-title = "Component"
-description = "Conceptual overview of components in Kubeflow Pipelines"
+title = "组件"
+description = "Kubeflow Pipelines 中的组件概念概述"
 weight = 20
 +++
 
-A *pipeline component* is self-contained set of code that performs one step in
-the ML workflow (pipeline), such as data preprocessing, data transformation,
-model training, and so on. A component is analogous to a function, in that it
-has a name, parameters, return values, and a body.
+*流水线组件* 是代表机器学习工作流（流水线）中一个步骤的独立代码集，例如数据处理、数据变换或模型训练等。组件和函数类似，在组件里有名称、参数、返回值和主体。
 
-## Component code
+## 组件代码
 
-The code for each component includes the following:
+每个组件的代码包括以下几部分：
 
-* **Client code:** The code that talks to endpoints to submit jobs. For example, 
-  code to talk to the Google Dataproc API to submit a Spark job.
+* **客户端代码：** 与端点交互提交作业的代码。例如，与 Google Dataproc API 进行交互以提交 Spark 作业的代码。
 
-* **Runtime code:** The code that does the actual job and usually runs in the 
-  cluster. For example, Spark code that transforms raw data into preprocessed 
-  data.
+* **运行时代码：** 执行真正工作，通常在集群中运行的代码。例如，将原始数据转换为预处理数据的 Spark 代码。
 
-Note the naming convention for client code and runtime code&mdash;for a task 
-named "mytask":
+请注意客户端代码和运行时代码的命名规约 —— 以一个名为 “mytask” 的任务为例：
 
-* The `mytask.py` program contains the client code.
-* The `mytask` directory contains all the runtime code.
+* `mytask.py` 程序包含客户端代码。
+* `mytask` 目录包含所有运行时代码。
 
-## Component definition
+## 组件定义
 
-A component specification in YAML format describes the component for the
-Kubeflow Pipelines system. A component definition has the following parts:
+YAML 格式的组件规范描述了 Kubeflow Pipelines 系统中的组件。组件定义包含以下部分：
 
-* **Metadata:** name, description, etc.
-* **Interface:** input/output specifications (name, type, description, default 
-  value, etc).
-* **Implementation:** A specification of how to run the component given a 
-  set of argument values for the component's inputs. The implementation section 
-  also describes how to get the output values from the component once the
-  component has finished running.
+* **元数据：** 名称、描述等。
+* **接口：** 输入/输出规范（名称、类型、描述、缺省值等）。
+* **实现：** 在给定一组输入组件的参数值的情况下组件如何运行的规范。实现部分还描述了一旦组件运行完毕，如何从组件获取输出值。
 
-For the complete definition of a component, see the
-[component specification](/docs/pipelines/reference/component-spec/).
+有关组件的完整定义，请参阅 [组件规范](/docs/pipelines/reference/component-spec/)。
 
-## Containerizing components
+## 容器化组件
 
-You must package your component as a 
-[Docker image](https://docs.docker.com/get-started/). Components represent a 
-specific program or entry point inside a container.
+你必须把你的组件打包成 [Docker 镜像](https://docs.docker.com/get-started/)。组件代表了容器内的特定程序或入口点。
 
-Each component in a pipeline executes independently. The components do not run
-in the same process and cannot directly share in-memory data. You must serialize
-(to strings or files) all the data pieces that you pass between the components
-so that the data can travel over the distributed network. You must then
-deserialize the data for use in the downstream component.
+流水线中的每个组件都独立执行。这些组件不能在同一进程中运行，也不能直接共享内存中的数据。你必须序列化（字符串或文件的形式）所有需要在组件间传递的数据块以便数据能够在分布式网络中传输。此后你必须反序列化数据以供下游组件使用。
 
-## Next steps
+## 下一步
 
-* Read an [overview of Kubeflow Pipelines](/docs/pipelines/pipelines-overview/).
-* Follow the [pipelines quickstart guide](/docs/pipelines/pipelines-quickstart/) 
-  to deploy Kubeflow and run a sample pipeline directly from the Kubeflow 
-  Pipelines UI.
-* Build your own 
-  [component and pipeline](/docs/pipelines/sdk/build-component/).
-* Build a [reusable component](/docs/pipelines/sdk/component-development/) for
-  sharing in multiple pipelines.
+* 阅读 [Kubeflow Pipelines 概览](/docs/pipelines/pipelines-overview/)。
+* 按照 [pipelines 快速入门指南](/docs/pipelines/pipelines-quickstart/) 部署 Kubeflow
+  并在 Kubeflow Pipelines UI 中直接运行一个示例。
+* 构建你自己的 [组件和流水线](/docs/pipelines/sdk/build-component/)。
+* 构建一个 [可复用的组件](/docs/pipelines/sdk/component-development/) 在多个流水线中共享。
