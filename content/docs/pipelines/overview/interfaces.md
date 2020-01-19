@@ -1,60 +1,42 @@
 +++
-title = "Introduction to the Pipelines Interfaces"
-description = "The ways you can interact with the Kubeflow Pipelines system"
+title = "Pipelines 接口简介"
+description = "你与 Kubeflow Pipelines 系统交互的几种方法"
 weight = 20
 +++
 
-This page introduces the interfaces that you can use to build and run
-machine learning (ML) workflows with Kubeflow Pipelines.
+本文档介绍了 Kubeflow Pipelines 的接口。通过这些接口你可以在 Kubeflow Pipelines
+上构建并运行机器学习（ML）工作流。
 
-## User interface (UI)
+## 用户界面（UI）
 
-You can access the Kubeflow Pipelines UI by clicking **Pipeline Dashboard** on 
-the Kubeflow UI. The Kubeflow Pipelines UI looks like this:
+你可以在 Kubeflow UI 里通过点击 **Pipeline Dashboard** 进入 Kubeflow Pipelines UI。Kubeflow Pipelines UI 如下图：
   <img src="/docs/images/pipelines-ui.png" 
     alt="Pipelines UI"
     class="mt-3 mb-3 border border-info rounded">
 
-From the Kubeflow Pipelines UI you can perform the following tasks:
+在 Kubeflow Pipelines UI 中，您可以执行以下任务：
 
-* Run one or more of the preloaded samples to try out pipelines quickly.
-* Upload a pipeline as a compressed file. The pipeline can be one that you
-  have built (see how to [build a 
-  pipeline](/docs/pipelines/sdk/build-component/#compile-the-pipeline)) or one 
-  that someone has shared with you.
-* Create an *experiment* to group one or more of your pipeline runs.
-  See the [definition of an
-  experiment](/docs/pipelines/overview/concepts/experiment/).
-* Create and start a *run* within the experiment. A run is a single execution
-  of a pipeline. See the [definition of a
-  run](/docs/pipelines/overview/concepts/run/).
-* Explore the configuration, graph, and output of your pipeline run.
-* Compare the results of one or more runs within an experiment.
-* Schedule runs by creating a recurring run.
+* 通过运行一个或多个预置的示例快速尝试流水线。
+* 将流水线以压缩文件的形式上传。流水线可以是你已经构建好的（查看如何 [构建一个流水线](/docs/pipelines/sdk/build-component/#compile-the-pipeline) ）或是他人分享给你的。
+* 创建 *实验* 将你的流水线的一个或多个 run 分组。查看 [实验的定义](/docs/pipelines/overview/concepts/experiment/)。
+* 在实验中创建并启动一个 *run*。一个 run 是流水线的一次执行。查看 [run 的定义](/docs/pipelines/overview/concepts/run/)。
+* 浏览你的流水线 run 的配置、图和输出。
+* 比较某个实验中的一个或多个 run 的结果。
+* 通过创建一个可重复的 run 来按计划执行多个 run。
 
-See the [quickstart guide](/docs/pipelines/pipelines-quickstart/) for more
-information about accessing the Kubeflow Pipelines UI and running the samples.
+查看 [快速入门指南](/docs/pipelines/pipelines-quickstart/) 获取更多有关访问 Kubeflow Pipelines UI 和运行示例的信息。
 
-When building a pipeline component, you can write out information for display
-in the UI. See the guides to [exporting 
-metrics](/docs/pipelines/sdk/pipelines-metrics/) and [visualizing results in 
-the UI](/docs/pipelines/sdk/output-viewer/).
+构建流水线组件时，你可以让输出的信息在 UI 上显示。请参阅有关 [导出指标](/docs/pipelines/sdk/pipelines-metrics/) 和 [在 UI 中可视化结果](/docs/pipelines/sdk/output-viewer/) 的指南。
 
 ## Python SDK
 
-The Kubeflow Pipelines SDK provides a set of Python packages that you can use to 
-specify and run your ML workflows.
+Kubeflow Pipelines SDK 提供了一些可用于指定并运行你的机器学习工作流的 Python 包。
 
-See the [introduction to the Kubeflow Pipelines 
-SDK](/docs/pipelines/sdk/sdk-overview/) for an overview of the ways you can
-use the SDK to build pipeline components and pipelines.
+查看 [Kubeflow Pipelines 
+SDK 简介](/docs/pipelines/sdk/sdk-overview/) 获取关于使用 SDK 构建流水线组件和流水线的几种方式的概述。
 
 ## REST API
 
-The Kubeflow Pipelines API is useful for continuous integration/deployment
-systems, for example, where you want to incorporate your pipeline executions
-into shell scripts or other systems. 
-For example, you may want to trigger a pipeline run when new data comes in.
+Kubeflow Pipelines API 对于持续集成/部署系统很有用，比如你可以将流水线的执行嵌入到 shell 脚本或是其它系统中。例如你可能会希望在新数据到来时触发一个流水线。
 
-See the [Kubeflow Pipelines API reference 
-documentation](/docs/pipelines/reference/api/kubeflow-pipeline-api-spec/).
+请参阅 [Kubeflow Pipelines API 参考文档](/docs/pipelines/reference/api/kubeflow-pipeline-api-spec/)。
