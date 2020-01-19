@@ -222,7 +222,7 @@ def xgb_train_pipeline(
 
 ## 后续
 
-* 根据 [流水线快速入门指南](/docs/pipelines/pipelines-quickstart) 部署 Kubeflow 并从 Kubeflow Pipelines UI 直接运行一个流水线示例。
+* 根据 [pipelines 快速入门指南](/docs/pipelines/pipelines-quickstart) 部署 Kubeflow 并从 Kubeflow Pipelines UI 直接运行一个流水线示例。
 * 使用 [Kubeflow Pipelines SDK](/docs/pipelines/sdk/sdk-overview/) 构建机器学习流水线。
 * 按照完整的指南使用 [the Kubeflow Pipelines 示例](/docs/pipelines/tutorials/build-pipeline/) 进行实验。
   

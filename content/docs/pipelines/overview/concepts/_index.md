@@ -1,5 +1,5 @@
 +++
-title = "Concepts"
-description = "Understand the terminology used in Kubeflow Pipelines"
+title = "概念"
+description = "理解 Kubeflow Pipelines 用到的术语"
 weight = 40
 +++
