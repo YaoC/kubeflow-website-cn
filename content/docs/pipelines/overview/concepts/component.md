@@ -1,6 +1,6 @@
 +++
 title = "组件"
-description = "Kubeflow Pipelines 中的组件概念概述"
+description = "Kubeflow Pipelines 中组件的概念概述"
 weight = 20
 +++
 

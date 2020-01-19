@@ -1,6 +1,6 @@
 +++
 title = "流水线"
-description = "Kubeflow Pipelines 中的流水线概念概述"
+description = "Kubeflow Pipelines 中流水线的概念概述"
 weight = 10
 +++
 
