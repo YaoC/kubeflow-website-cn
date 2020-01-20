@@ -1,17 +1,16 @@
 +++
-title =  "Contributing to Kubeflow"
-description = "How to start contributing to Kubeflow"
+title =  "为 Kubeflow 做贡献"
+description = "如何开始为 Kubeflow 做贡献"
 weight = 3
 aliases = ["/docs/contributing/"]
 +++
 
-Welcome to the Kubeflow project!
+欢迎来到 Kubeflow 项目！
 
-## Getting started as a Kubeflow contributor
+## 以 Kubeflow 贡献者的身份开始
 
-This document is the single source of truth for how to contribute to the code base.
-We'd love to accept your patches and contributions to this project. There are
-just a few small guidelines you need to follow.
+该文档是关于如何为代码库做贡献的唯一可信来源（SSOT）。
+我们很愿意接受你为本项目提交的补丁和贡献。仅仅有一些小的你应该遵守的指导方针。
 
 ### Sign the CLA
 
