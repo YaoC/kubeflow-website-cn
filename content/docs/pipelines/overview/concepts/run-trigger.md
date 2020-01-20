@@ -1,20 +1,16 @@
 +++
-title = "Run Trigger"
-description = "Conceptual overview of run triggers in Kubeflow Pipelines"
+title = "Run 触发器"
+description = "Kubeflow Pipelines 中 run 触发器的概念概述"
 weight = 60
 +++
 
-A *run trigger* is a flag that tells the system when a recurring run
-configuration spawns a new run. The following types of run trigger are
-available:
+*run 触发器* 是一个告诉系统可重复的 run 配置何时产生一个新的 run 的标识。run 触发器包括以下几种类型：
 
-* Periodic: for an interval-based scheduling of runs (for example: every 2 hours 
-  or every 45 minutes).
-* Cron: for specifying `cron` semantics for scheduling runs.
+* 周期型：基于一定的时间间隔调度 run（例如：每 2 小时或每 45 分钟）。
+* 定时任务型：通过指定 `cron` 语义来调度 run。
 
-## Next steps
+## 下一步
 
-* Read an [overview of Kubeflow Pipelines](/docs/pipelines/pipelines-overview/).
-* Follow the [pipelines quickstart guide](/docs/pipelines/pipelines-quickstart/) 
-  to deploy Kubeflow and run a sample pipeline directly from the Kubeflow 
-  Pipelines UI.
+* 阅读 [Kubeflow Pipelines 概览](/docs/pipelines/pipelines-overview/)。
+* 按照 [pipelines 快速入门指南](/docs/pipelines/pipelines-quickstart/) 部署 Kubeflow
+  并在 Kubeflow Pipelines UI 中直接运行一个示例。
