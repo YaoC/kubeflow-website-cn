@@ -1,30 +1,17 @@
 +++
-title = "Run and Recurring Run"
-description = "Conceptual overview of runs in Kubeflow Pipelines"
+title = "Run 和可重复的 Run"
+description = "Kubeflow Pipelines 中 run 的概念概述"
 weight = 50
 +++
 
-A *run* is a single execution of a pipeline. Runs comprise an immutable log of
-all experiments that you attempt, and are designed to be self-contained to allow
-for reproducibility. You can track the progress of a run by looking at its
-details page on the Kubeflow Pipelines UI, where you can see the runtime graph,
-output artifacts, and logs for each step in the run.
+*run* 是流水线的一次独立的执行。Run 中包含了你尝试的所有实验的不可变的记录，同时它被设计成独立的以便可以复现。你可以通过在 Kubeflow Pipelines UI 上查看 run 的详细信息来跟踪它的进度，这些信息包括运行时的图、输出构件和 run 的每一阶段的日志。 
 
-<a id=recurring-run> 
-A *recurring run* is a repeatable run of a pipeline. The
-configuration for a recurring run includes a copy of a pipeline with all
-parameter values specified and a 
-[run trigger](/docs/pipelines/concepts/run-trigger/).
-You can start a recurring run inside any experiment, and it will periodically
-start a new copy of the run configuration. You can enable/disable the recurring
-run from the Kubeflow Pipelines UI. You can also specify the maximum number of
-concurrent runs, to limit the number of runs launched in parallel. This can be
-helpful if the pipeline is expected to run for a long period of time and is
-triggered to run frequently.
+<a id=recurring-run>
 
-## Next steps
+*可重复的 run* 是流水线的一个可以重复运行的 run。可重复的 run 的配置包括了一个指定了所有参数的流水线副本和一个 [run 触发器](/docs/pipelines/overview/concepts/run-trigger/)。你可以在任意实验中启动一个可重复的 run，之后它会定期启动一个据具有相同配置的 run。你可以在 Kubeflow Pipelines UI 中启用/禁用可重复的运行。你还可以指定 run 的最大并发数来限制并行启动的 run 的数量。这对会运行很长时间同时又会被频繁触发运行的流水线很有帮助。
 
-* Read an [overview of Kubeflow Pipelines](/docs/pipelines/pipelines-overview/).
-* Follow the [pipelines quickstart guide](/docs/pipelines/pipelines-quickstart/) 
-  to deploy Kubeflow and run a sample pipeline directly from the Kubeflow 
-  Pipelines UI.
+## 下一步
+
+* 阅读 [Kubeflow Pipelines 概览](/docs/pipelines/pipelines-overview/)。
+* 按照 [pipelines 快速入门指南](/docs/pipelines/pipelines-quickstart/) 部署 Kubeflow
+  并在 Kubeflow Pipelines UI 中直接运行一个示例。
