@@ -1,16 +1,17 @@
 +++
-title = "Storage Options"
-description = "Using EFS and FSx for Lustre with Kubeflow"
+title = "存储选项"
+description = "在 Kubeflow 中为 Lustre 使用 EFS 和 FSx"
 weight = 95
 +++
 
-This guide describes how to use Amazon EKS and Amazon FSx for Lustre with Kubeflow.
+本向导描述如何在 Kubeflow 中为 Lustre使用亚马逊 EKS 和 FSx
 
-
-## Amazon EFS
+## 亚马逊 EFS
 
 Amazon EFS is managed NFS in AWS. Amazon EFS supports `ReadWriteMany` access mode, which means the volume can be mounted as read-write by many nodes. It is very useful for creating a shared filesystem that can be mounted into pods such as Jupyter. For example, one group can share datasets or models across an entire team.
 By default, the Amazon EFS CSI driver is not enabled and you need to follow steps to install it.
+
+亚马逊 EFS 是 AWS 用来管理 NFS 的工具。
 
 ### Deploy the Amazon EFS CSI Plugin
 
