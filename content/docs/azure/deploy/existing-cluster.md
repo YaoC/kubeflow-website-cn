@@ -1,6 +1,6 @@
 +++
 title = "在已存在的集群中初始化设置"
-description = "配置一个集群如果你已经有了一个"
+description = "配置一个你已有的集群"
 weight = 5
 +++
 
