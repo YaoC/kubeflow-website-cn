@@ -4,7 +4,7 @@ description = "理解 Kubeflow Pipelines 的目标和主要概念"
 weight = 10
 +++
 
-Kubeflow Pipelines 是一个基于 Docker 容器，用于构建和部署可移植可扩展的机器学习（ML）工作流的平台。
+Kubeflow Pipelines 是一个用于构建和部署可移植、可扩展，基于 Docker 容器的机器学习（ML）工作流的平台。
 
 ## 快速入门
 
