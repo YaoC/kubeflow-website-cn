@@ -1,95 +1,73 @@
 +++
-title = "Upgrading and Reinstalling"
-description = "How to upgrade or reinstall your Kubeflow Pipelines deployment"
+title = "升级和重新安装"
+description = "如何升级或是重新安装你的 Kubeflow Pipelines 部署"
 weight = 50
 +++
 
-Starting from Kubeflow version 0.5, Kubeflow Pipelines persists the
-pipeline data in a permanent storage volume. Kubeflow Pipelines therefore
-supports the following capabilities:
+从 Kubeflow 0.5 版本开始，Kubeflow Pipelines 将流水线数据持久化存储到一个持久化存储卷中。Kubeflow Pipelines 因此能够支持以下功能：
 
-* **Reinstall:** You can delete a cluster and create a new cluster, specifying
-  the storage to retrieve the original data in the new cluster.
+* **重新安装：** 你可以删除一个集群然后创建一个新的集群，通过指定现有存储的方式让新建的集群能够检索到原来的数据。
 
-Note that upgrade isn't currently supported for Kubeflow. Check [this issue](https://github.com/kubeflow/kubeflow/issues/3727)
-for progress.
+注意 Kubeflow 目前并不支持升级。查看 [该 issue](https://github.com/kubeflow/kubeflow/issues/3727) 获取最新进展。
 
-If you want the latest Kubeflow Pipelines in Google Cloud Platform (GCP), we recommend that you use the [Kubeflow Pipelines standalone deployment](/docs/pipelines/standalone-deployment-gcp/).
+如果你想在 Google Cloud Platform（GCP）中使用最新的 Kubeflow Pipelines，我们建议你使用 [Kubeflow Pipelines 独立部署](/docs/pipelines/standalone-deployment-gcp/)。
 
-## Context
+## 相关环境
 
-Kubeflow Pipelines creates and manages the following data related to your 
-machine learning pipeline: 
+Kubeflow Pipelines 创建并管理以下与你的机器学习流水线相关的数据：
 
-* **Metadata:** Experiments, jobs, runs, etc. Kubeflow Pipelines 
-  stores the pipeline metadata in a MySQL database.
-* **Artifacts:** Pipeline packages, metrics, views, etc. Kubeflow Pipelines 
-  stores the artifacts in a [Minio server](https://docs.minio.io/).
+* **元数据：** 实验、作业、run等。Kubeflow Pipelines 将流水线元数据存储在一个 MySQL 数据库中。
+* **构件：** 流水线包、指标、视图等。Kubeflow Pipelines 将构件存储在一个 [Minio 服务器](https://docs.minio.io/) 中。
 
-The MySQL database and the Minio server are both backed by the Kubernetes
-[PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#types-of-persistent-volumes)
-(PV) subsystem. 
 
-* If you are deploying to Google Cloud Platform (GCP), Kubeflow Pipelines 
-  creates a Compute Engine 
-  [Persistent Disk](https://cloud.google.com/persistent-disk/) (PD)
-  and mounts it as a PV. 
-* If you are not deploying to GCP, you can specify your own preferred PV.
+ MySQL 数据库和 Minio 服务器的存储后端都是 Kubernetes
+[持久化存储卷](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#types-of-persistent-volumes)（PV）子系统。 
 
-## Deploying Kubeflow
+* 如果你在 Google Cloud Platform（GCP）中部署，那么 Kubeflow Pipelines 会创建一个 Compute Engine 
+  [Persistent Disk](https://cloud.google.com/persistent-disk/)（PD）并将它作为一个 PV 进行挂载。
+* 如果你不是在 GCP 中部署，那么你可以指定适合自己的 PV。
 
-This section describes how to deploy Kubeflow in a way that ensures you can use
-the Kubeflow Pipelines reinstallation capability.
+## 部署 Kubeflow
 
-### Deploying Kubeflow on GCP 
+本节描述一种能够确保你可以使用 Kubeflow Pipelines 重装功能的 Kubeflow 部署方法。
 
-Follow the guide to [deploying Kubeflow on
-GCP](/docs/gke/deploy/). You don't need to do anything extra. 
+### 在 GCP 中部署 Kubeflow
 
-When the deployment has finished, you can see two entries in the GCP 
-Deployment Manager, one for deploying the cluster and one for
-deploying the storage:
+参照指南 [在 GCP 中部署 Kubeflow](/docs/gke/deploy/)。你无需执行任何其他操作。
+
+部署结束后，你可以在 GCP Deployment Manager 中看到两个条目，一个是部署的集群，另一个是部署的存储：
 
 <img src="/docs/images/pipelines-deployment-storage1.png" 
   alt="Deployment Manager showing the storage deployment entry"
   class="mt-3 mb-3 border border-info rounded">
 
-The entry suffixed with `-storage` creates one PD for the metadata store and one
-for the artifact store:
+后缀为 `-storage` 的条目为元数据存储创建一个PD，为构件库创建一个PD：
 
 <img src="/docs/images/pipelines-deployment-storage2.png" 
   alt="Deployment Manager showing details of the storage deployment entry"
   class="mt-3 mb-3 border border-info rounded">
 
-### Deploying Kubeflow in other environments (non-GCP) 
+### 在其它环境（非 GCP）中部署 Kubeflow
 
-The steps below assume that you already have a Kubernetes cluster set up.
+以下步骤假设你已经配置好一个 Kubernetes 集群。
 
-* If you don't need custom storage and are happy with the default PVs that
-  Kubeflow provides, you can follow the Kubeflow
-  [quick start](/docs/started/getting-started/#kubeflow-quick-start)
-  without doing anything extra. The deployment script uses the Kubernetes 
-  default
-  [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/#the-storageclass-resource)
-  to provision the PVs for you. 
+* 如果你不需要自定义的存储同时乐意使用 Kubeflow 提供的默认 PV，你可以参照 Kubeflow
+  [快速入门](/docs/started/getting-started/#kubeflow-quick-start) 部署而不用进行其它操作。部署脚本使用 Kubernetes 默认的 [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/#the-storageclass-resource) 为你提供 PV。
 
-* If you want to specify a custom PV:
+* 如果你想要指定一个自定义的 PV：
 
-  1. Create two PVs in your Kubernetes cluster with your preferred storage type. 
-     See the
-     [Kubernetes guide to PVs](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes).  
+  1. 在你的 Kubernetes 集群中使用首选存储类型创建两个 PV。参考 [Kubernetes PV 指南](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes)。
 
-  1. Follow the Kubeflow
-     [quick start](/docs/started/getting-started/#kubeflow-quick-start),
-     but note the following change to the standard procedure:
+  1. 按照 Kubeflow
+     [快速入门](/docs/started/getting-started/#kubeflow-quick-start)，但请注意对标准过程的以下更改：
 
-        **Before** running the `apply` command:
+        在执行 `apply` 命令 **之前**：
 
         ```
         kfctl apply -V -f ${CONFIG_FILE}
         ```
 
-        You should first edit the following files to specify your PVs:
+        你首先需要编辑以下文件指定你的 PV：
 
         `${KF_DIR}/kustomize/minio/overlays/minioPd/params.env`
         ```
@@ -105,38 +83,33 @@ The steps below assume that you already have a Kubernetes cluster set up.
         ...
         ```
 
-  1. Then run the `apply` command as usual:
+  1. 接着照常执行 `apply` 命令：
 
         ```
         kfctl apply -V -f ${CONFIG_FILE}
         ``` 
 
-## Reinstalling Kubeflow Pipelines
+## 重新安装 Kubeflow Pipelines
 
-You can delete a Kubeflow cluster and create a new one, specifying
-your existing storage to retrieve the original data in the new cluster.
+你可以删除一个集群然后创建一个新的集群，通过指定现有存储的方式让新建的集群能够检索到原来的数据。
 
-**Note:** You must use command line deployment. You cannot reinstall
-Kubeflow Pipelines using the web interface.
+**注意：** 你必须使用命令行方式部署。你无法在 web 界面上重新安装 Kubeflow Pipelines
 
-### Reinstalling Kubeflow Pipelines on GCP
+### 在 GCP 中重新安装 Kubeflow Pipelines
 
-To reinstall Kubeflow Pipelines, follow the [command line deployment 
-instructions](/docs/gke/deploy/deploy-cli/), but note the following
-change in the procedure:
+要重新安装 Kubeflow Pipelines，安装 [命令行部署说明](/docs/gke/deploy/deploy-cli/)，但是注意该过程中的以下更改：
 
-1. Warning, when you do `kfctl apply` or `kfctl build`, you should use a 
-  different `${KF_NAME}` name from your existing `${KF_NAME}`. Otherwise, your 
-  data in existing PDs will be deleted during `kfctl apply`.
+1. 注意，当你执行 `kfctl apply` 或 `kfctl build` 命令时，你需要使用一个与你现有的 `${KF_NAME}` 名称不同的 `${KF_NAME}` 名称。
+   否则你现有 PD 中的数据会在执行 `kfctl apply` 命令时被删除。
 
-1. **Before** running the following `apply` command:
+1. 在执行 `apply` 命令 **之前**：
 
     ```
     kfctl apply -V -f ${CONFIG_FILE}
     ```
 
-    You should first:
-    * Edit `${KF_DIR}/gcp_config/storage-kubeflow.yaml` to skip creating new storages:
+    你首先需要：
+    * 编辑 `${KF_DIR}/gcp_config/storage-kubeflow.yaml` 来跳过创建新的存储：
 
       ```
       ...
@@ -144,8 +117,7 @@ change in the procedure:
       ...
       ```
 
-    * Edit the following files to specify the persistent disks created
-      in a previous deployment:
+    * 编辑以下文件以指定在先前部署中创建的持久性磁盘：
 
       `${KF_DIR}/kustomize/minio/overlays/minioPd/params.env`
       ```
@@ -161,33 +133,27 @@ change in the procedure:
       ...
       ```
 
-1. Then run the `apply` command:
+1. 接着执行 `apply` 命令：
 
     ```
     kfctl apply -V -f ${CONFIG_FILE}
     ``` 
 
-### Reinstalling Kubeflow in other environments (non-GCP) 
+### 在其它环境（非GCP）中重新安装 Kubeflow 
 
-The steps are the same as for any non-GCP installation, except that you
-must use the same PV definitions as in your previous deployment to create the
-PV in the new cluster.
+以下步骤在非 GCP 环境中的安装都是相同的，除了必须使用与先前部署中相同的 PV 定义来在新的集群中创建 PV。
 
-1. Create two PVs in your Kubernetes cluster, using the same PV definitions as
-   in your previous deployment. See the
-   [Kubernetes guide to PVs](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes).  
+1. 在 Kubernetes 集群中使用和你之前部署相同的 PV 定义新建两个 PV。参考 [Kubernetes PV 指南](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes)。
 
-1. Follow the Kubeflow
-   [quick start](/docs/started/getting-started/#kubeflow-quick-start),
-   but note the following change to the standard procedure:
+1. 按照 Kubeflow [快速入门](/docs/started/getting-started/#kubeflow-quick-start)，请注意对标准过程的以下更改：
 
-    **Before** running the `apply` command:
+    在执行 `apply` 命令 **之前**：
 
     ```
     kfctl apply -V -f ${CONFIG_FILE}
     ```
 
-    You should first edit the following files to specify your PVs:
+    你首先需要编辑以下文件指定你的 PV：
 
     `${KF_DIR}/kustomize/minio/overlays/minioPd/params.env`
     ```
@@ -203,7 +169,7 @@ PV in the new cluster.
     ...
     ```
 
-1. Then run the `apply` command:
+1. 接着执行 `apply` 命令：
 
     ```
     kfctl apply -V -f ${CONFIG_FILE}
