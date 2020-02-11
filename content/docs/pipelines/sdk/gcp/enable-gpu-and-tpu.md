@@ -1,29 +1,27 @@
 +++ 
-title = "Enable GPU and TPU"
-description = "Enable GPU and TPU for Kubeflow Pipelines on Google Kubernetes Engine (GKE)"
+title = "启用 GPU 和 TPU"
+description = "在 Google Kubernetes Engine（GKE）中为 Kubeflow Pipelines 启用 GPU 和 TPU"
 weight = 10
 +++
 
-This page describes how to enable GPU or TPU for a pipeline on GKE by using the Pipelines 
-DSL language.
+本页面描述了如何使用 Pipelines DSL 语言在  GKE 中为流水线启用 GPU 或 TPU。
 
-## Prerequisites
+## 先决条件
 
-To enable GPU and TPU on your Kubeflow cluster, follow the instructions on how to 
-[customize](/docs/gke/customizing-gke#common-customizations) the GKE cluster for Kubeflow before
-setting up the cluster.
+要在你的 Kubeflow 集群中启用 GPU 和 TPU，在设置集群之前请先按照如何为
+Kubeflow [自定义](/docs/gke/customizing-gke#common-customizations) GKE 集群的指南完成操作。
 
-## Configure ContainerOp to consume GPUs
+## 配置 ContainerOp 来使用 GPU
 
-After enabling the GPU, the Kubeflow setup script installs a default GPU pool with type nvidia-tesla-k80 with auto-scaling enabled.
-The following code consumes 2 GPUs in a ContainerOp.
+启用 GPU 后，Kubeflow 安装脚本会安装一个类型为 nvidia-tesla-k80 的默认 GPU 资源池，同时启用动态扩容功能。
+以下代码中的 ContainerOp 使用了 2 个 GPU。
 
 ```python
 import kfp.dsl as dsl
 gpu_op = dsl.ContainerOp(name='gpu-op', ...).set_gpu_limit(2)
 ```
 
-The code above will be compiled into Kubernetes Pod spec:
+上面的代码会被编译成如下的 Kubernetes Pod 描述：
 
 ```yaml
 container:
@@ -33,7 +31,7 @@ container:
       nvidia.com/gpu: "2"
 ```
 
-If the cluster has multiple node pools with different GPU types, you can specify the GPU type by the following code.
+如果集群中有不同 GPU 类型的多个节点资源池，你可以通过以下代码指定 GPU 类型。
 
 ```python
 import kfp.dsl as dsl
@@ -41,7 +39,7 @@ gpu_op = dsl.ContainerOp(name='gpu-op', ...).set_gpu_limit(2)
 gpu_op.add_node_selector_constraint('cloud.google.com/gke-accelerator', 'nvidia-tesla-p4')
 ```
 
-The code above will be compiled into Kubernetes Pod spec:
+上面的代码会被编译成如下的 Kubernetes Pod 描述：
 
 
 ```yaml
@@ -54,11 +52,11 @@ nodeSelector:
   cloud.google.com/gke-accelerator: nvidia-tesla-p4
 ```
 
-Check the [GKE GPU guide](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus) to learn more about GPU settings. 
+查看 [GKE GPU 指南](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus) 了解更多关于 GPU 的设置。
 
-## Configure ContainerOp to consume TPUs
+## 配置 ContainerOp 来使用 TPU
 
-Use the following code to configure ContainerOp to consume TPUs on GKE:
+使用以下代码来在 GKE 中配置 ContainerOp 使用 TPU：
 
 ```python
 import kfp.dsl as dsl
@@ -67,7 +65,7 @@ tpu_op = dsl.ContainerOp(name='tpu-op', ...).apply(gcp.use_tpu(
   tpu_cores = 8, tpu_resource = 'v2', tf_version = '1.12'))
 ```
 
-The above code uses 8 v2 TPUs with TF version to be 1.12. The code above will be compiled into Kubernetes Pod spec:
+上面的代码使用了 8 个 v2 版本的 TPU，TF 的版本是 1.12。上面的代码会被编译成如下的 Kubernetes Pod 描述：
 
 ```yaml
 container:
@@ -80,4 +78,4 @@ container:
       tf-version.cloud-tpus.google.com: "1.12"
 ```
 
-See the [GKE TPU Guide](https://cloud.google.com/tpu/docs/kubernetes-engine-setup) to learn more about TPU settings.
+查看 [GKE TPU 指南](https://cloud.google.com/tpu/docs/kubernetes-engine-setup) 了解更多关于 TPU 的设置。
