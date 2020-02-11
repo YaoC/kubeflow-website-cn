@@ -1,33 +1,27 @@
 +++
-title = "Install the Kubeflow Pipelines SDK"
-description = "Setting up your Kubeflow Pipelines development environment"
+title = "安装 Kubeflow Pipelines SDK"
+description = "配置你的 Kubeflow Pipelines 开发环境"
 weight = 20
 +++
 
-This guide tells you how to install the 
-[Kubeflow Pipelines SDK](https://github.com/kubeflow/pipelines/tree/master/sdk)
-which you can use to build machine learning pipelines. You can use the SDK
-to execute your pipeline, or alternatively you can upload the pipeline to
-the Kubeflow Pipelines UI for execution.
+本指南告诉你如何安装用来构建机器学习流水线的
+[Kubeflow Pipelines SDK](https://github.com/kubeflow/pipelines/tree/master/sdk)。你可以使用 SDK 来执行流水线，或者你也可以将流水线上传到
+Kubeflow Pipelines UI 中执行。
 
-All of the SDK's classes and methods are described in the auto-generated [SDK reference docs](https://kubeflow-pipelines.readthedocs.io/en/latest/).
+SDK 中的所有的类和方法都在自动生成的 [SDK 参考文档](https://kubeflow-pipelines.readthedocs.io/en/latest/) 中有描述。
 
-## Set up Python
+## 配置 Python
 
-You need **Python 3.5** or later to use the Kubeflow Pipelines SDK. This
-guide uses Python 3.7.
+使用 Kubeflow Pipelines SDK 你需要 **Python 3.5** 或更高的版本。本指南使用 Python 3.7。
 
-If you haven't yet set up a Python 3 environment, do so now. This guide
-recommends [Miniconda](https://conda.io/miniconda.html), but you can use
-a virtual environment manager of your choice, such as `virtualenv`.
+如果你还没有配置 Python 3 环境，那么立刻开始。本指南推荐使用 [Miniconda](https://conda.io/miniconda.html)，
+但你也可以使用自己选择的虚拟环境管理器，例如 `virtualenv`。
 
-Follow the steps below to set 
-up Python using [Miniconda](https://conda.io/miniconda.html):
+按照以下步骤使用 [Miniconda](https://conda.io/miniconda.html) 配置 Python：
 
-1. Choose one of the following methods to install Miniconda, depending on your
-  environment:
+1. 根据你的环境选择下列方法之一安装 Miniconda：
 
-  * Debian/Ubuntu/[Cloud Shell](https://console.cloud.google.com/cloudshell):   
+  * Debian/Ubuntu/[Cloud Shell](https://console.cloud.google.com/cloudshell)：  
 
         ```bash
         apt-get update; apt-get install -y wget bzip2
@@ -35,63 +29,61 @@ up Python using [Miniconda](https://conda.io/miniconda.html):
         bash Miniconda3-latest-Linux-x86_64.sh
         ```
 
-  * Windows: Download the 
-    [installer](https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe)
-    and make sure you select the option to
-    **Add Miniconda to my PATH environment variable** during the installation.
+  * Windows：下载
+    [安装包](https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe)
+    并在安装过程中确保勾选了
+    **Add Miniconda to my PATH environment variable** 选项。
 
-  * MacOS: Download the 
-    [installer](https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh)
-    and run the following command:
+  * MacOS：下载
+    [安装包](https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh)
+    后执行以下命令：
 
         ```bash
         bash Miniconda3-latest-MacOSX-x86_64.sh
         ```
 
-1. Check that the `conda` command is available:
+1. 确认 `conda` 命令可用：
 
     ```bash
     which conda
     ```
 
-    If the `conda` command is not found, add Miniconda to your path:
+    如果没有找到 `conda` 命令，那么将 Miniconda 添加到你的 path 中：
  
     ```bash
     export PATH=<YOUR_MINICONDA_PATH>/bin:$PATH
     ```
 
-1. Create a clean Python 3 environment with a name of your choosing. This
-  example uses Python 3.7 and an environment name of `mlpipeline`.:
+1. 使用你选择的名称创建一个干净的 Python 3 环境。本示例使用 Python 3.7，环境名称是 `mlpipeline`：
  
     ```bash
     conda create --name mlpipeline python=3.7
     conda activate mlpipeline
     ```
  
-## Install the Kubeflow Pipelines SDK
+## 安装 Kubeflow Pipelines SDK
 
-Run the following command to install the Kubeflow Pipelines SDK:
+运行以下命令来安装 Kubeflow Pipelines SDK：
 
 ```bash
 pip install https://storage.googleapis.com/ml-pipeline/release/latest/kfp.tar.gz --upgrade
 ```
 
-After successful installation, the command `dsl-compile` should be available.
-You can use this command to verify it:
+安装成功后，`dsl-compile` 应该是可用的。你可以使用以下命令来进行验证：
 
 ```bash
 which dsl-compile
 ```
 
-The response should be something like this:
+该命令的响应应该和以下结果类似：
 
 ```
 /<PATH_TO_YOUR_USER_BIN>/miniconda3/envs/mlpipeline/bin/dsl-compile
 ```
 
-## Next steps
+## 下一步
 
-* [See how to use the SDK](/docs/pipelines/sdk/sdk-overview/).
-* [Build a component and a pipeline](/docs/pipelines/sdk/build-component/).
-* [Get started with the UI](/docs/pipelines/pipelines-quickstart).
-* [Understand pipeline concepts](/docs/pipelines/concepts/).
+* [查看如何使用 SDK](/docs/pipelines/sdk/sdk-overview/)。
+* [构建组件和流水线](/docs/pipelines/sdk/build-component/)。
+* [开始使用 UI](/docs/pipelines/pipelines-quickstart)。
+* [理解流水线相关概念](/docs/pipelines/concepts/)。
