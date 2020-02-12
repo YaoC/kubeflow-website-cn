@@ -1,6 +1,6 @@
 +++
-title = "Introduction to the Pipelines SDK"
-description = "Overview of using the SDK to build components and pipelines"
+title = "流水线 SDK 简介"
+description = "使用 SDK 来构建组件和流水线的概述"
 weight = 10
 +++
 

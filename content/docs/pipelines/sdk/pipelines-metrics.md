@@ -1,25 +1,21 @@
 +++
-title = "Pipeline Metrics"
-description = "Export and visualize pipeline metrics"
+title = "流水线指标"
+description = "导出并可视化流水线指标"
 weight = 90
 +++
 
-This page shows you how to export metrics from a Kubeflow Pipelines component. 
-For details about how to build a component, see the guide to 
-[building your own component](/docs/pipelines/sdk/build-component/).
+本文档将向你展示如何从 Kubeflow Pipelines 组件中导出指标。获取更多关于如何构建组件的详细信息，请查看
+[构建你自己的组件](/docs/pipelines/sdk/build-component/) 指南。
  
-## Overview of metrics
+## 指标概述
 
-Kubeflow Pipelines supports the export of scalar metrics. You can write a list
-of metrics to a local file to describe the performance of the model. The
-pipeline agent uploads the local file as your run-time metrics. You can view the
-uploaded metrics as a visualization in the **Runs** page for a particular
-experiment in the Kubeflow Pipelines UI.
+Kubeflow Pipelines 支持导出标量指标。你可以通过将指标列表写入本地文件来描述模型的性能。
+流水线代理会将该本地文件作为运行时指标上传。你可以在 Kubeflow Pipelines UI 中的特定实验的
+**Runs** 页面中以可视化形式查看上传的指标。
  
-## Export the metrics file
+## 导出指标文件
 
-To enable metrics, your program must write out a file named 
-`/mlpipeline-metrics.json`. For example:
+要启用指标功能，你的程序必须输出一个名为 `/mlpipeline-metrics.json` 的文件。例如：
 
 ```Python
   accuracy = accuracy_score(df['target'], df['predicted'])
@@ -34,34 +30,31 @@ To enable metrics, your program must write out a file named
     json.dump(metrics, f)
 ```
 
-See the 
-[full example](https://github.com/kubeflow/pipelines/blob/master/components/local/confusion_matrix/src/confusion_matrix.py).
+查看
+[完整的示例](https://github.com/kubeflow/pipelines/blob/master/components/local/confusion_matrix/src/confusion_matrix.py)。
 
-The metrics file has the following requirements:
+指标文件需要满足以下要求：
 
-* The file path must be `/mlpipeline-metrics.json`.
-* `name` must follow the pattern `^[a-z]([-a-z0-9]{0,62}[a-z0-9])?$`.
-* `numberValue` must be a numeric value.
-* `format` can only be `PERCENTAGE`, `RAW`, or not set.
+* 文件路径必须为 `/mlpipeline-metrics.json`。
+* `name` 必须匹配模式 `^[a-z]([-a-z0-9]{0,62}[a-z0-9])?$`。
+* `numberValue` 必须为数值。
+* `format` 必须是 `PERCENTAGE`，`RAW`，或是不设置。
 
-## View the metrics
+## 查看指标
 
-To see a visualization of the metrics:
+要查看指标的可视化视图：
 
-1. Open the **Experiments** page in the Kubeflow Pipelines UI.
-1. Click one of your experiments. The **Runs** page opens showing the top two 
-  metrics, where *top* is determined by prevalence (that is, the metrics with 
-  the highest count) and then by metric name. 
-  The metrics appear as columns for each run.
+1. 在 Kubeflow Pipelines UI 中打开 **Experiments** 页面。
+1. 点击一个你的实验。打开的 **Runs** 页面中显示了头两个指标，头两个指标是什么首先由普遍程度（也就是指标计数的最高值）决定，其次是指标名称。
+  指标作为每个 run 的一列显示。
   
-The following example shows the **accuracy-score** and 
-**roc-auc-score** metrics for two runs within an experiment:
+以下示例显示了一个实验中的两个 run 的 **accuracy-score** 和
+**roc-auc-score** 指标：
 
 <img src="/docs/images/taxi-tip-run-scores.png" 
   alt="Metrics from a pipeline run"
   class="mt-3 mb-3 border border-info rounded">
 
-## Next step
+## 下一步
 
-Visualize the output of your component by [writing out metadata for an output 
-viewer](/docs/pipelines/metrics/output-viewer/).
+通过 [把元数据写到输出查看器](/docs/pipelines/metrics/output-viewer/) 来可视化你的组件输出。
