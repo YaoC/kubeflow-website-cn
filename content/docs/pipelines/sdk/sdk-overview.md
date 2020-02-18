@@ -1,182 +1,123 @@
 +++
-title = "流水线 SDK 简介"
+title = "Pipelines SDK 简介"
 description = "使用 SDK 来构建组件和流水线的概述"
 weight = 10
 +++
 
-The [Kubeflow Pipelines 
-SDK](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.html)
-provides a set of Python packages that you can use to specify and run your 
-machine learning (ML) workflows. A *pipeline* is a description of an ML 
-workflow, including all of the *components* that make up the steps in the 
-workflow and how the components interact with each other. 
+[Kubeflow Pipelines SDK](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.html)
+提供了一系列的 Python 包，你可以通过它们来指定并运行机器学习（ML）工作流。*流水线*
+是一个机器学习工作流的描述，它包括了构成工作流各个步骤的所有组件已经这些组件之间如何进行交互。
 
-## SDK packages
+## SDK 包
 
-The Kubeflow Pipelines SDK includes the following packages:
+Kubeflow Pipelines SDK 包括了以下包：
 
 * [`kfp.compiler`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.compiler.html)
-  includes classes and methods for building Docker container images for your
-  pipeline components. Methods in this package include, but are not limited
-  to, the following:
+  包括用于为流水线组件构建容器镜像的类和方法。该包包含但不限于以下方法：
 
-  * `kfp.compiler.Compiler.compile` compiles your Python DSL code into a single 
-    static configuration (in YAML format) that the Kubeflow Pipelines service
-    can process. The Kubeflow Pipelines service converts the static 
-    configuration into a set of Kubernetes resources for execution.
+  * `kfp.compiler.Compiler.compile` 将你的 Python DSL 代码编译成 Kubeflow Pipelines
+    服务能够处理的静态配置（YAML 格式）。Kubeflow Pipelines 会将该静态文件转换成一系列
+    Kubernetes 资源以供执行。
 
-  * `kfp.compiler.build_docker_image` builds a container image based on a 
-    Dockerfile and pushes the image to a URI. In the parameters, you provide the 
-    path to a Dockerfile containing the image specification, and the URI for the 
-    target image (for example, a container registry).
+  * `kfp.compiler.build_docker_image` 根据 Dockerfile 构建容器镜像，然后将镜像推送到指定的 URI 处。
+    在该方法的参数中，你需要提供一个包含了镜像规格的 Dockerfile 的路径和一个用于定位存储目标镜像的 URI（例如，容器仓库地址）。
 
-  * `kfp.compiler.build_python_component` builds a container image for a
-    pipeline component based on a Python function, and pushes the image to a 
-    URI. In the parameters, you provide the Python function that does the work 
-    of the pipeline component, a Docker image to use as a base image, 
-    and the URI for the target image (for example, a container registry).
+  * `kfp.compiler.build_python_component` 根据一个 Python 函数来构建一个流水线组件对应的容器镜像，
+    然后然后将镜像推送到指定的 URI 处。在该方法的参数中，你需要提供执行流水线组件工作的 Python 函数，一个
+    Docker 镜像用作基础镜像，还有一个用于定位存储目标镜像的 URI（例如，容器仓库地址）。
 
 * [`kfp.components`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.components.html)
-  includes classes and methods for interacting with pipeline components. 
-  Methods in this package include, but are not limited to, the following:
+  包括用于和流水线组件交互的类和方法。该包包含但不限于以下方法：
 
-  * `kfp.components.func_to_container_op` converts a Python function to a 
-    pipeline component and returns a factory function.
-    You can then call the factory function to construct an instance of a 
-    pipeline task
-    ([`ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp)) 
-    that runs the original function in a container.
+  * `kfp.components.func_to_container_op` 将 Python 函数转换成流水线组件并返回一个工厂函数。
+    接下来你可以调用该工厂函数来构造一个会在容器中运行原始函数的流水线任务的实例（[`ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp)）。
 
-  * `kfp.components.load_component_from_file` loads a pipeline component from
-    a file and returns a factory function.
-    You can then call the factory function to construct an instance of a 
-    pipeline task 
-    ([`ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp)) 
-    that runs the component container image.
+  * `kfp.components.load_component_from_file` 从文件中加载流水线组件并返回一个工厂函数。
+    接下来你可以调用该工厂函数来构建一个运行组件容器镜像的流水线任务的实例（[`ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp)）。
 
-  * `kfp.components.load_component_from_url` loads a pipeline component from
-    a URL and returns a factory function.
-    You can then call the factory function to construct an instance of a 
-    pipeline task 
-    ([`ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp)) 
-    that runs the component container image.
+  * `kfp.components.load_component_from_url` 从 URL 加载流水线组件并返回一个工厂函数。
+    接下来你可以调用该工厂函数来构建一个运行组件容器镜像的流水线任务的实例（[`ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp)）。
 
 * [`kfp.dsl`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html)
-  contains the domain-specific language (DSL) that you can use to define and
-  interact with pipelines and components. 
-  Methods, classes, and modules in this package include, but are not limited to, 
-  the following:
+  包含了定义流水线和组件并与之交互的领域特定语言（DSL）。该包包含但不限于以下方法、类和模块：
 
-  * `kfp.dsl.ContainerOp` represents a pipeline task (op) implemented by a 
-    container image.
-  * `kfp.dsl.PipelineParam` represents a pipeline parameter that you can pass
-    from one pipeline component to another. See the guide to 
-    [pipeline parameters](/docs/pipelines/sdk/parameters/).
-  * `kfp.dsl.component` is a decorator for DSL functions that returns a
-    pipeline component.
-    ([`ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp)).
-  * `kfp.dsl.pipeline` is a decorator for Python functions that returns a
-    pipeline.
-  * `kfp.dsl.python_component` is a decorator for Python functions that adds
-    pipeline component metadata to the function object.
-  * [`kfp.dsl.types`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.types.html) 
-    contains a list of types defined by the Kubeflow Pipelines SDK. Types
-    include basic types like `String`, `Integer`, `Float`, and `Bool`, as well
-    as domain-specific types like `GCPProjectID` and `GCRPath`.
-    See the guide to 
-    [DSL static type checking](/docs/pipelines/sdk/static-type-checking).
+  * `kfp.dsl.ContainerOp` 表示一个由容器镜像实现的流水线任务（op）。
+  * `kfp.dsl.PipelineParam` 表示一个可以从一个流水线组件传递到另一个流水线组件的流水线参数。参见
+    [流水线参数](/docs/pipelines/sdk/parameters/) 指南。
+  * `kfp.dsl.component` 是一个返回流水线组件的 DSL 函数的装饰器。([`ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp))。
+  * `kfp.dsl.pipeline` 是一个返回流水线的 Python 函数的装饰器。
+  * `kfp.dsl.python_component` 是一个添加流水线组件元数据到函数对象的 Python 函数的装饰器。
+  * [`kfp.dsl.types`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.types.html)
+    包含一系列 Kubeflow Pipelines SDK 定义的类型。这些类型包括像 `String`、 `Integer`、 `Float` 和 `Bool`
+    这样的基本类型，也包括像 `GCPProjectID` 和 `GCRPath` 这样的领域特定类型。参见
+    [DSL 静态类型检查](/docs/pipelines/sdk/static-type-checking) 指南。
   * [`kfp.dsl.ResourceOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ResourceOp)
-    represents a pipeline task (op) which lets you directly manipulate 
-    Kubernetes resources (`create`, `get`, `apply`, ...).
+    表示让你直接操作 Kubernetes 资源（`create`、 `get`、 `apply`、...）的流水线任务（op）。
   * [`kfp.dsl.VolumeOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.VolumeOp)
-    represents a pipeline task (op) which creates a new `PersistentVolumeClaim` 
-    (PVC). It aims to make the common case of creating a `PersistentVolumeClaim` 
-    fast.
+    表示创建一个新的 `PersistentVolumeClaim`（PVC）的流水线任务（op）。它旨在让创建 `PersistentVolumeClaim` 的常见情况变得更快。
   * [`kfp.dsl.VolumeSnapshotOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.VolumeSnapshotOp)
-    represents a pipeline task (op) which creates a new `VolumeSnapshot`. It 
-    aims to make the common case of creating a `VolumeSnapshot` fast.
+    表示创建一个新的 `VolumeSnapshot` 的流水线任务（op）。它旨在让创建 `VolumeSnapshot` 的常见情况变得更快。
   * [`kfp.dsl.PipelineVolume`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.PipelineVolume)
-    represents a volume used to pass data between pipeline steps. `ContainerOp`s 
-    can mount a `PipelineVolume` either via the constructor's argument 
-    `pvolumes` or `add_pvolumes()` method.
+    表示用于在流水线各步骤间传递数据的存储卷。`ContainerOp` 可以通过构造器的参数 `pvolumes` 或 `add_pvolumes()` 方法来挂载 `PipelineVolume`。
 
 * [`kfp.Client`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.client.html)
-  contains the Python client libraries for the [Kubeflow Pipelines 
-  API](/docs/pipelines/reference/api/kubeflow-pipeline-api-spec/).
-  Methods in this package include, but are not limited to, the following:
+  包含 [Kubeflow Pipelines API](/docs/pipelines/reference/api/kubeflow-pipeline-api-spec/)
+  的 Python 客户端库。该包包含但不限于以下方法：
 
-  * `kfp.Client.create_experiment` creates a pipeline 
-    [experiment](/docs/pipelines/concepts/experiment/) and returns an
-    experiment object.
-  * `kfp.Client.run_pipeline` runs a pipeline and returns a run object.
+  * `kfp.Client.create_experiment` 创建一个流水线 [实验](/docs/pipelines/concepts/experiment/) 并返回一个实验对象。
+  * `kfp.Client.run_pipeline` 运行一个流水线并返回一个 run 对象。
 
 * [`kfp.notebook`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.notebook.html)
 
 * [KFP extension modules](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.extensions.html)
-  include classes and functions for specific platforms on which you can use
-  Kubeflow Pipelines. Examples include utility functions for on premises,
-  Google Cloud Platform (GCP), Amazon Web Services (AWS), and Microsoft Azure.
+  包括在特定平台使用 Kubeflow Pipelines 的类和方法。示例包括了本地的、Google Cloud Platform（GCP）、Amazon Web Services（AWS）和 Microsoft
+  Azure 的实用工具功能。
 
-## Installing the SDK
+## 安装 SDK
 
-Follow the guide to 
-[installing the Kubeflow Pipelines SDK](/docs/pipelines/sdk/install-sdk/).
+参见指南
+[安装 Kubeflow Pipelines SDK](/docs/pipelines/sdk/install-sdk/)。
 
-## Building pipelines and components
+## 构建流水线和组件
 
-This section summarizes the ways you can use the SDK to build pipelines and 
-components:
+本节总结了可以用 SDK 来构建流水线和组件的方式：
 
-* [Creating components from existing application 
-  code](#standard-component-outside-app)
-* [Creating components within your application code](#standard-component-in-app)
-* [Creating lightweight components](#lightweight-component)
-* [Using prebuilt, reusuable components in your pipeline](#prebuilt-component)
+* [从现有的应用代码来构建组件](#standard-component-outside-app)
+* [在应用代码中构建组件](#standard-component-in-app)
+* [构建轻量级组件](#lightweight-component)
+* [在流水线中使用预构建的，可复用的组件](#prebuilt-component)
 
-The diagrams provide a conceptual guide to the relationships between the 
-following concepts:
+后续的图解为以下概念之间的关系提供了概念性的指导：
 
-* Your Python code
-* A pipeline component
-* A Docker container image
-* A pipeline
+* 你的 Python 代码
+* 流水线组件
+* Docker 容器镜像
+* 流水线
 
 <a id="standard-component-outside-app"></a>
-### Creating components from existing application code
+### 从现有的应用代码来构建组件
 
-This section describes how to create a component and a pipeline *outside* your
-Python application, by creating components from existing containerized
-applications. This technique is useful when you have already created a 
-TensorFlow program, for example, and you want to use it in a pipeline.
+本节介绍如何在 Python 应用的 *外部* 构建流水线和组件，即通过从现有的容器化应用程序构建建组件。
+该技术在你已经有现成的应用程序的时候非常有用，例如你已经创建了一个 TensorFlow 应用，然后想在流水线中使用它。
 
 <img src="/docs/images/pipelines-sdk-outside-app.svg" 
   alt="Creating components outside your application code"
   class="mt-3 mb-3 border border-info rounded">
 
-Below is a more detailed explanation of the above diagram:
+以下是上图的更加详细的说明：
 
-1. Write your application code, `my-app-code.py`. For example, write code to
-  transform data or train a model.
+1. 编写应用程序代码，`my-app-code.py`。例如，编写代码来变换数据或者训练模型。
 
-1. Create a [Docker](https://docs.docker.com/get-started/) container image that 
-  packages your program (`my-app-code.py`) and upload the container image to a 
-  registry. To build a container image based on a given 
-  [Dockerfile](https://docs.docker.com/engine/reference/builder/), you can use 
-  the [Docker command-line 
-  interface](https://docs.docker.com/engine/reference/commandline/cli/)
-  or the 
-  [`kfp.compiler.build_docker_image` method](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.compiler.html#kfp.compiler.build_docker_image) from the Kubeflow Pipelines 
-  SDK.
+1. 创建打包了你的应用程序（`my-app-code.py`）的 [Docker](https://docs.docker.com/get-started/)
+  容器镜像并将它上传到镜像仓库中。你可以使用 [Docker 命令行接口](https://docs.docker.com/engine/reference/commandline/cli/)
+  或 Kubeflow Pipelines SDK 中的 [`kfp.compiler.build_docker_image` 方法](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.compiler.html#kfp.compiler.build_docker_image) 来根据指定的 [Dockerfile](https://docs.docker.com/engine/reference/builder/)
+  构建容器镜像。
 
-1. Write a component function using the Kubeflow Pipelines DSL to define your
-  pipeline's interactions with the component’s Docker container. Your
-  component function must return a
-  [`kfp.dsl.ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp).
-  Optionally, you can use the [`kfp.dsl.component` 
-  decorator](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.component)
-  to enable [static type checking](/docs/pipelines/sdk/static-type-checking) in 
-  the DSL compiler. To use the decorator, you can add the `@kfp.dsl.component` 
-  annotation to your component function:
+1. 使用 Kubeflow Pipelines DSL 编写组件函数来定义流水线和组件的 Docker 容器之间的交互。你的组件函数必须返回一个
+  [`kfp.dsl.ContainerOp`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.ContainerOp)。
+  你可以使用 [`kfp.dsl.component` 装饰器](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.component)
+  来在 DSL 编译器中启用 [静态类型检查](/docs/pipelines/sdk/static-type-checking)。在组件函数上添加 `@kfp.dsl.component` 
+  注解就可以使用该装饰器：
 
     ```python
     @kfp.dsl.component
@@ -188,11 +129,9 @@ Below is a more detailed explanation of the above diagram:
       )
     ```
 
-1. Write a pipeline function using the Kubeflow Pipelines DSL to define the 
-  pipeline and include all the pipeline components. Use the [`kfp.dsl.pipeline`
-  decorator](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.pipeline)
-  to build a pipeline from your pipeline function. To use the decorator, you can
-  add the `@kfp.dsl.pipeline` annotation to your pipeline function:
+1. 使用 Kubeflow Pipelines DSL 编写流水线函数来定义流水线和其中的所有流水线组件。使用
+  [`kfp.dsl.pipeline` 装饰器](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.pipeline)
+  来根据流水线函数构建流水线。在流水线函数上添加 `@kfp.dsl.pipeline` 注解就能使用该装饰器：
 
     ```python
     @kfp.dsl.pipeline(
@@ -203,29 +142,26 @@ Below is a more detailed explanation of the above diagram:
       my_step = my_component(my_param='a')
     ```
 
-1. Compile the pipeline to generate a compressed YAML definition of the 
-  pipeline. The Kubeflow Pipelines service converts the static configuration 
-  into a set of Kubernetes resources for execution.
-  
-    To compile the pipeline, you can choose one of the following 
-    options:
+1. 编译流水线来生成压缩的流水线 YAML 格式的定义。Kubeflow Pipelines 服务会将静态的配置转换成一系列 Kubernetes 资源以供执行。
 
-    * Use the 
+    要编译流水线，你可以选择以下的选项：
+
+    * 使用 
       [`kfp.compiler.Compiler.compile`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.compiler.html#kfp.compiler.Compiler) 
-      method:
+      方法：
 
         ```python
         kfp.compiler.Compiler().compile(my_pipeline,  
           'my-pipeline.zip')
         ```
 
-    * Alternatively, use the `dsl-compile` command on the command line.
+    * 或者，在命令行中使用 `dsl-compile` 命令。
 
         ```shell
         dsl-compile --py [path/to/python/file] --output my-pipeline.zip
         ```
 
-1. Use the Kubeflow Pipelines SDK to run the pipeline:
+1. 使用 Kubeflow Pipelines SDK 运行流水线：
 
     ```python
     client = kfp.Client()
@@ -234,50 +170,42 @@ Below is a more detailed explanation of the above diagram:
       'my-pipeline.zip')
     ```
 
-You can also choose to share your pipeline as follows:
+你还可以选择共享你的流水线，具体如下：
 
-* Upload the pipeline zip file to the Kubeflow Pipelines UI. For more 
-  information about the UI, see the [Kubeflow Pipelines quickstart 
-  guide](/docs/pipelines/pipelines-quickstart/).
-* Upload the pipeline zip file to a shared repository. See the 
-  [reusable components and other shared resources](/docs/examples/shared-resources/).
+* 将流水线 zip 压缩文件上传到 Kubeflow Pipelines UI。更多关于 UI 的信息请参考
+  [Kubeflow Pipelines 快速入门指南](/docs/pipelines/pipelines-quickstart/)。
+* 将流水线 zip 压缩文件上传到共享存储仓库。参见
+  [可重用组件和其它共享资源](/docs/examples/shared-resources/)。
 
-{{% alert title="More about the above workflow" color="info" %}}
-For more detailed instructions, see the guide to [building components and 
-pipelines](/docs/pipelines/sdk/build-component/).
+{{% alert title="有关上述工作流的更多信息" color="info" %}}
+获取更详细的说明，参见指南 [构建组件和流水线](/docs/pipelines/sdk/build-component/)。
 
-For an example, see the
+关于示例，参见 GitHub 上的
 [`xgboost-training-cm.py`](https://github.com/kubeflow/pipelines/blob/master/samples/core/xgboost_training_cm/xgboost_training_cm.py)
-pipeline sample on GitHub. The pipeline creates an XGBoost model using 
-structured data in CSV format.
+流水线示例。该流水线使用 CSV 格式的结构化数据创建了一个 XGBoost 模型。
 {{% /alert %}}
 
 <a id="standard-component-in-app"></a>
-### Creating components within your application code
+### 在你的应用代码中创建组件
 
-This section describes how to create a pipeline component *inside* your
-Python application, as part of the application. The DSL code for creating a
-component therefore runs inside your Docker container.
+本节描述如何在 Python 应用 *内部* 创建一个流水线组件，以此作为应用的一部分。因此创建组件的 DSL 代码运行在你的 Docker 容器内部。
 
 <img src="/docs/images/pipelines-sdk-within-app.svg" 
   alt="Building components within your application code"
   class="mt-3 mb-3 border border-info rounded">
 
-Below is a more detailed explanation of the above diagram:
+以下是上图的更加详细的说明：
 
-1. Write your code in a Python function. For example, write code to transform 
-  data or train a model:
+1. 在一个 Python 函数中编写你的代码。例如编写转换数据或训练模型的代码：
 
     ```python
     def my_python_func(a: str, b: str) -> str:
       ...
     ```
 
-1. Use the [`kfp.dsl.python_component`
-  decorator](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.python_component)
-  to convert your Python function into 
-  a pipeline component. To use the decorator, you can add the 
-  `@kfp.dsl.python_component` annotation to your function:
+1. 使用 [`kfp.dsl.python_component`
+  装饰器](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.python_component)
+  将你的 Python 函数转换成一个流水线组件。在你的函数上添加 `@kfp.dsl.python_component` 注解就能使用该装饰器：
 
     ```python
     @kfp.dsl.python_component(
@@ -288,9 +216,9 @@ Below is a more detailed explanation of the above diagram:
       ...
     ```
 
-1. Use 
+1. 使用 
   [`kfp.compiler.build_python_component`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.compiler.html#kfp.compiler.build_python_component)
-  to create a container image for the component.
+  为组件创建一个容器镜像。
 
     ```python
     my_op = compiler.build_python_component(
@@ -299,11 +227,9 @@ Below is a more detailed explanation of the above diagram:
       target_image=TARGET_IMAGE)
     ```
 
-1. Write a pipeline function using the Kubeflow Pipelines DSL to define the 
-  pipeline and include all the pipeline components. Use the [`kfp.dsl.pipeline`
-  decorator](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.pipeline)
-  to build a pipeline from your pipeline function, by adding 
-  the `@kfp.dsl.pipeline` annotation to your pipeline function:
+1. 使用 Kubeflow Pipelines DSL 编写一个流水线函数来定义流水线和其中的所有组件。使用
+  [`kfp.dsl.pipeline` 装饰器](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.pipeline)
+  把流水线函数构建成流水线， 通过在你的流水线函数上添加 `@kfp.dsl.pipeline` 注解即可：
 
     ```python
     @kfp.dsl.pipeline(
@@ -314,29 +240,26 @@ Below is a more detailed explanation of the above diagram:
       my_step = my_op(a='a', b='b')
     ```
 
-1. Compile the pipeline to generate a compressed YAML definition of the 
-  pipeline. The Kubeflow Pipelines service converts the static configuration 
-  into a set of Kubernetes resources for execution.
+1. 编译流水线来生成压缩的流水线 YAML 格式的定义。Kubeflow Pipelines 服务会将静态的配置转换成一系列 Kubernetes 资源以供执行。
   
-    To compile the pipeline, you can choose one of the following 
-    options:
+    要编译流水线，你可以选择以下的选项：
 
-    * Use the 
+    * 使用 
       [`kfp.compiler.Compiler.compile`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.compiler.html#kfp.compiler.Compiler) 
-      method:
+      方法：
 
         ```python
         kfp.compiler.Compiler().compile(my_pipeline,  
           'my-pipeline.zip')
         ```
 
-    * Alternatively, use the `dsl-compile` command on the command line.
+    * 或者，在命令行中使用 `dsl-compile` 命令。
 
         ```shell
         dsl-compile --py [path/to/python/file] --output my-pipeline.zip
         ```
 
-1. Use the Kubeflow Pipelines SDK to run the pipeline:
+1. 使用 Kubeflow Pipelines SDK 来运行流水线：
 
     ```python
     client = kfp.Client()
@@ -345,70 +268,63 @@ Below is a more detailed explanation of the above diagram:
       'my-pipeline.zip')
     ```
 
-You can also choose to share your pipeline as follows:
+你还可以选择共享你的流水线，具体如下：
 
-* Upload the pipeline zip file to the Kubeflow Pipelines UI. For more 
-  information about the UI, see the [Kubeflow Pipelines quickstart 
-  guide](/docs/pipelines/pipelines-quickstart/).
-* Upload the pipeline zip file to a shared repository. See the 
-  [reusable components and other shared resources](/docs/examples/shared-resources/).
+* 将流水线 zip 压缩文件上传到 Kubeflow Pipelines UI。更多关于 UI 的信息请参考
+  [Kubeflow Pipelines 快速入门指南](/docs/pipelines/pipelines-quickstart/)。
+* 将流水线 zip 压缩文件上传到共享存储仓库。参见
+  [可重用组件和其它共享资源](/docs/examples/shared-resources/)。
 
-{{% alert title="More about the above workflow" color="info" %}}
-For an example of the above workflow, see the
-Jupyter notebook titled [KubeFlow Pipelines basic component build](https://github.com/kubeflow/pipelines/blob/master/samples/core/component_build/component_build.ipynb) on GitHub.
+{{% alert title="有关上述工作流的更多信息" color="info" %}}
+有关上述工作流的示例，参见 GitHub 上标题为
+[KubeFlow Pipelines 基本组件构建](https://github.com/kubeflow/pipelines/blob/master/samples/core/component_build/component_build.ipynb) 
+的 Jupyter notebook。
 {{% /alert %}}
 
 <a id="lightweight-component"></a>
-### Creating lightweight components
+### 创建轻量级组件
 
-This section describes how to create lightweight Python components that do not
-require you to build a container image. Lightweight components simplify 
-prototyping and rapid development, especially in a Jupyter notebook environment.
+本节描述如何创建不需要构建容器镜像的轻量级 Python 组件。轻量级组件简化了原型设计并加快了开发速度，尤其是在 Jupyter notebook 环境中。
 
 <img src="/docs/images/pipelines-sdk-lightweight.svg" 
   alt="Building lightweight Python components"
   class="mt-3 mb-3 border border-info rounded">
 
-Below is a more detailed explanation of the above diagram:
+以下是上图的更加详细的说明：
 
-1. Write your code in a Python function. For example, write code to transform 
-  data or train a model:
+1. 在一个 Python 函数中编写你的代码。例如编写转换数据或训练模型的代码：
 
     ```python
     def my_python_func(a: str, b: str) -> str:
       ...
     ```
 
-1. Use 
+1. 使用 
   [`kfp.components.func_to_container_op`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.components.html#kfp.components.func_to_container_op)
-  to convert your Python function into a pipeline component:
+  将你的 Python 函数转换成一个流水线组件：
 
     ```python
     my_op = kfp.components.func_to_container_op(my_python_func)
     ```
 
-    Optionally, you can write the component to a file that you can share or use
-    in another pipeline:
+    或者，你可以将组件写入一个文件以便进行共享或在其它流水线中使用：
 
     ```python
     my_op = kfp.components.func_to_container_op(my_python_func, 
       output_component_file='my-op.component')
     ```
 
-1. If you stored your lightweight component in a file as described in the 
-  previous step, use 
+1. 如果你在上一步中像描述的那样将轻量级组件存储到一个文件中，使用
   [`kfp.components.load_component_from_file`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.components.html#kfp.components.load_component_from_file)
-  to load the component:
+  加载组件：
 
     ```python
     my_op = kfp.components.load_component_from_file('my-op.component')
     ```
 
-1. Write a pipeline function using the Kubeflow Pipelines DSL to define the 
-  pipeline and include all the pipeline components. Use the [`kfp.dsl.pipeline`
-  decorator](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.pipeline)
-  to build a pipeline from your pipeline function, by adding 
-  the `@kfp.dsl.pipeline` annotation to your pipeline function:
+1. 1. 使用 Kubeflow Pipelines DSL 编写一个流水线函数来定义流水线和其中的所有组件。使用
+  [`kfp.dsl.pipeline` 装饰器](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.pipeline)
+  把流水线函数构建成流水线， 通过在你的流水线函数上添加 `@kfp.dsl.pipeline` 注解即可：
 
     ```python
     @kfp.dsl.pipeline(
@@ -419,29 +335,26 @@ Below is a more detailed explanation of the above diagram:
       my_step = my_op(a='a', b='b')
     ```
 
-1. Compile the pipeline to generate a compressed YAML definition of the 
-  pipeline. The Kubeflow Pipelines service converts the static configuration 
-  into a set of Kubernetes resources for execution.
+1. 编译流水线来生成压缩的流水线 YAML 格式的定义。Kubeflow Pipelines 服务会将静态的配置转换成一系列 Kubernetes 资源以供执行。
   
-    To compile the pipeline, you can choose one of the following 
-    options:
+    要编译流水线，你可以选择以下的选项：
 
-    * Use the 
+    * 使用
       [`kfp.compiler.Compiler.compile`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.compiler.html#kfp.compiler.Compiler) 
-      method:
+      方法：
 
         ```python
         kfp.compiler.Compiler().compile(my_pipeline,  
           'my-pipeline.zip')
         ```
 
-    * Alternatively, use the `dsl-compile` command on the command line.
+    * 或者，在命令行中使用 `dsl-compile` 命令。
 
         ```shell
         dsl-compile --py [path/to/python/file] --output my-pipeline.zip
         ```
 
-1. Use the Kubeflow Pipelines SDK to run the pipeline:
+1. 使用 Kubeflow Pipelines SDK 运行流水线：
 
     ```python
     client = kfp.Client()
@@ -450,45 +363,41 @@ Below is a more detailed explanation of the above diagram:
       'my-pipeline.zip')
     ```
 
-{{% alert title="More about the above workflow" color="info" %}}
-For more detailed instructions, see the guide to [building lightweight 
-components](/docs/pipelines/sdk/lightweight-python-components/).
+{{% alert title="有关上述工作流的更多信息" color="info" %}}
+要获取更详细的说明，参见指南
+[构建轻量级组件](/docs/pipelines/sdk/lightweight-python-components/)。
 
-For an example, see the [Lightweight Python components - 
-basics](https://github.com/kubeflow/pipelines/blob/master/samples/core/lightweight_component/lightweight_component.ipynb)
-notebook on GitHub.
+有关示例，参见 GitHub 上的
+[轻量级 Python 组件 —— 
+基础](https://github.com/kubeflow/pipelines/blob/master/samples/core/lightweight_component/lightweight_component.ipynb)
+notebook。
 {{% /alert %}}
 
 <a id="prebuilt-component"></a>
-### Using prebuilt, reusable components in your pipeline
+### 在流水线中使用预先构建的、可复用的组件
 
-A reusable component is one that someone has built and made available for others
-to use. To use the component in your pipeline, you need the YAML file that
-defines the component.
+可复用的组件是作者已经构建好的并可以供他人使用的组件。要在你的流水线中使用这样的组件，你需要定义了该组件的 YAML 文件。
 
 <img src="/docs/images/pipelines-sdk-reusable.svg" 
   alt="Using prebuilt, reusable components in your pipeline"
   class="mt-3 mb-3 border border-info rounded">
 
-Below is a more detailed explanation of the above diagram:
+以下是上图的更加详细的说明：
 
-1. Find the YAML file that defines the reusable component. For example, take a
-  look at the [reusable components and other shared 
-  resources](/docs/examples/shared-resources/).
+1. 找到定义了可复用组件的 YAML 文件。例如，查看
+  [可复用组件和其它共享资源](/docs/examples/shared-resources/)。
 
-1. Use 
+1. 使用 
   [`kfp.components.load_component_from_url`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.components.html#kfp.components.load_component_from_url)
-  to load the component:
+  加载组件：
 
     ```python
     my_op = kfp.components.load_component_from_url('https://path/to/component.yaml')
     ```
 
-1. Write a pipeline function using the Kubeflow Pipelines DSL to define the 
-  pipeline and include all the pipeline components. Use the [`kfp.dsl.pipeline`
-  decorator](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.pipeline)
-  to build a pipeline from your pipeline function, by adding 
-  the `@kfp.dsl.pipeline` annotation to your pipeline function:
+1. 使用 Kubeflow Pipelines DSL 编写一个流水线函数来定义流水线和其中的所有组件。使用
+  [`kfp.dsl.pipeline` 装饰器](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.dsl.html#kfp.dsl.pipeline)
+  把流水线函数构建成流水线， 通过在你的流水线函数上添加 `@kfp.dsl.pipeline` 注解即可：
 
     ```python
     @kfp.dsl.pipeline(
@@ -499,29 +408,26 @@ Below is a more detailed explanation of the above diagram:
       my_step = my_op(a='a', b='b')
     ```
 
-1. Compile the pipeline to generate a compressed YAML definition of the 
-  pipeline. The Kubeflow Pipelines service converts the static configuration 
-  into a set of Kubernetes resources for execution.
+1. 编译流水线来生成压缩的流水线 YAML 格式的定义。Kubeflow Pipelines 服务会将静态的配置转换成一系列 Kubernetes 资源以供执行。
   
-    To compile the pipeline, you can choose one of the following 
-    options:
+    要编译流水线，你可以选择以下的选项：
 
-    * Use the 
+    * 使用
       [`kfp.compiler.Compiler.compile`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/kfp.compiler.html#kfp.compiler.Compiler) 
-      method:
+      方法：
 
         ```python
         kfp.compiler.Compiler().compile(my_pipeline,  
           'my-pipeline.zip')
         ```
 
-    * Alternatively, use the `dsl-compile` command on the command line.
+    * 或者，在命令行中使用 `dsl-compile` 命令。
 
         ```shell
         dsl-compile --py [path/to/python/file] --output my-pipeline.zip
         ```
 
-1. Use the Kubeflow Pipelines SDK to run the pipeline:
+1. 使用 Kubeflow Pipelines SDK 运行流水线：
 
     ```python
     client = kfp.Client()
@@ -529,19 +435,15 @@ Below is a more detailed explanation of the above diagram:
     my_run = client.run_pipeline(my_experiment.id, 'my-pipeline', 
       'my-pipeline.zip')
     ```
-{{% alert title="More about the above workflow" color="info" %}}
-For an example, see the
-[`xgboost-training-cm.py`](https://github.com/kubeflow/pipelines/blob/master/samples/core/xgboost-spark/xgboost-training-cm.py)
-pipeline sample on GitHub. The pipeline creates an XGBoost model using 
-structured data in CSV format.
+{{% alert title="有关上述工作流的更多信息" color="info" %}}
+关于示例，参见 GitHub 上的
+[`xgboost-training-cm.py`](https://github.com/kubeflow/pipelines/blob/master/samples/core/xgboost_training_cm/xgboost_training_cm.py)
+流水线示例。该流水线使用 CSV 格式的结构化数据创建了一个 XGBoost 模型。
 {{% /alert %}}
 
-## Next steps
+## 下一步
 
-* [Use pipeline parameters](/docs/pipelines/sdk/parameters/) to pass data between components.
-* Learn how to [write recursive functions in the 
-  DSL](/docs/pipelines/sdk/dsl-recursion).
-* Build a [reusable component](/docs/pipelines/sdk/component-development/) for
-  sharing in multiple pipelines.
-* Find out how to use the DSL to [manipulate Kubernetes resources dynamically 
-  as steps of your pipeline](/docs/pipelines/sdk/manipulate-resources/).
+* [使用流水线参数](/docs/pipelines/sdk/parameters/) 在组件之间传递数据。
+* 学习如何 [在 DSL 中编写递归函数](/docs/pipelines/sdk/dsl-recursion)。
+* 构建 [可复用组件](/docs/pipelines/sdk/component-development/) 以便在多个流水线中共享。
+* 了解如何使用 DSL 来 [把动态操作 Kubernetes 资源作为流水线中的步骤](/docs/pipelines/sdk/manipulate-resources/)。
