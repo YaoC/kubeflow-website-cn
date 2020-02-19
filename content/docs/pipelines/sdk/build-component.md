@@ -1,70 +1,55 @@
 +++
-title = "Build Components and Pipelines"
-description = "Building your own component and adding it to a pipeline"
+title = "构建组件和流水线"
+description = "构建你自己的流水线并将它添加到流水线中"
 weight = 30
 +++
 
-This page describes how to create a component for Kubeflow Pipelines and how
-to combine components into a pipeline. For an easier start, experiment with 
-[the Kubeflow Pipelines samples](/docs/pipelines/tutorials/build-pipeline/).
+本文档描述如何为 Kubeflow Pipelines 创建组件和如何将组件组合成流水线。要更轻松地开始，请尝试使用
+[Kubeflow Pipelines 示例](/docs/pipelines/tutorials/build-pipeline/)。
 
-## Overview of pipelines and components
+## 流水线和组件概览
 
-A _pipeline_ is a description of a machine learning (ML) workflow, including all
-of the components of the workflow and how they work together. The pipeline
-includes the definition of the inputs (parameters) required to run the pipeline 
-and the inputs and outputs of each component.
+_流水线_ 是一个机器学习（ML）工作流的描述，包括了工作流中所有的组件以及它们如何协同工作。
+流水线包括了运行流水线需要的输入（参数）的定义和每个组件的输入输出。
 
-A pipeline _component_ is an implementation of a pipeline task. A component
-represents a step in the workflow. Each component takes one or more inputs and
-may produce one or more outputs. A component consists of an interface
-(inputs/outputs), the implementation (a Docker container image and command-line
-arguments) and metadata (name, description).
+流水线 _组件_ 是流水线任务的实现。一个组件代表了工作流中的一个步骤。每个组件都接受一个或多个输入，
+同时可能产生一个或多个输出。组件由接口（输入/输出）、实现（Docker 容器镜像和命令行参数）和元数据（名称、描述）构成。
 
-For more information, see the conceptual guides to 
-[pipelines](/docs/pipelines/concepts/pipeline/)
-and [components](/docs/pipelines/concepts/component/).
+获取更多信息，参考
+[流水线](/docs/pipelines/concepts/pipeline/)
+和 [组件](/docs/pipelines/concepts/component/) 概念指南。
 
-## Before you start
+## 在你开始之前
 
-Set up your environment:
+设置你的环境：
 
-* Install [Docker](https://www.docker.com/get-docker).
-* Install the [Kubeflow Pipelines SDK](/docs/pipelines/sdk/install-sdk/).
+* 安装 [Docker](https://www.docker.com/get-docker)。
+* 安装 [Kubeflow Pipelines SDK](/docs/pipelines/sdk/install-sdk/)。
 
-The examples on this page come from the
-[XGBoost Spark pipeline sample](https://github.com/kubeflow/pipelines/tree/master/samples/core/xgboost_training_cm)
-in the Kubeflow Pipelines sample repository.
+本文档的示例来自 Kubeflow Pipelines 示例仓库的
+[XGBoost Spark 流水线示例](https://github.com/kubeflow/pipelines/tree/master/samples/core/xgboost_training_cm)。
 
-## Create a container image for each component
+## 为每一个组件创建容器镜像
 
-This section assumes that you have already created a program to perform the
-task required in a particular step of your ML workflow. For example, if the
-task is to train an ML model, then you must have a program that does the
-training, such as the program that
-[trains an XGBoost model](https://github.com/kubeflow/pipelines/blob/master/components/deprecated/dataproc/train/src/train.py).
+本节假设你已经创建好一个程序来执行机器学习工作流特定步骤所需的任务。比如，如果任务是要训练一个机器学习模型，
+那么你必须要有一个程序来进行训练，例如一个
+[训练 XGBoost 模型](https://github.com/kubeflow/pipelines/blob/master/components/deprecated/dataproc/train/src/train.py)
+的程序。
 
-Create a [Docker](https://docs.docker.com/get-started/) container image that
-packages your program. See the
-[Docker file](https://github.com/kubeflow/pipelines/blob/master/components/deprecated/dataproc/train/Dockerfile)
-for the example XGBoost model training program mentioned above. You can also
-examine the generic
-[`build_image.sh`](https://github.com/kubeflow/pipelines/blob/master/components/build_image.sh)
-script in the Kubeflow Pipelines repository of reusable components.
+创建一个打包了你的程序的 [Docker](https://docs.docker.com/get-started/) 容器镜像。 
+参考上面提及的 XGBoost 模型训练示例程序的
+[Docker file](https://github.com/kubeflow/pipelines/blob/master/components/deprecated/dataproc/train/Dockerfile)。
+你还可以查看可复用组件的 Kubeflow Pipelines 仓库中通用的
+[`build_image.sh`](https://github.com/kubeflow/pipelines/blob/master/components/build_image.sh) 脚本。
 
-Your component can create outputs that the downstream components can use as
-inputs. Each output must be a string and the container image must write each 
-output to a separate local text file. For example, if a training component needs 
-to output the path of the trained model, the component writes the path into a 
-local file, such as `/output.txt`. In the Python class that defines your 
-pipeline (see [below](#define-pipeline)) you can 
-specify how to map the content of local files to component outputs.
+你的组件可以创建输出，下游组件可以将其作为输入。每个输出都必须是字符串并且容器镜像必须将每个输出写入单独的本地文本文件中。
+例如，如果一个训练组件需要输出训练模型的路径，该组件将路径写入到一个本地文件中，例如是 `/output.txt`。在定义流水线（参见 [下面](#define-pipeline)）的
+Python 类中你可以指定如何将本地文件的内容映射到组件输出。
 
-## Create a Python function to wrap your component
+## 创建 Python 函数包装你的组件
 
-Define a Python function to describe the interactions with the Docker container
-image that contains your pipeline component. For example, the following
-Python function describes a component that trains an XGBoost model:
+定义一个 Python 函数来描述与包含来流水线组件的 Docker 容器镜像的交互。例如，下面的 Python
+函数描述了一个训练 XGBoost 模型的组件：
 
 ```python
 def dataproc_train_op(
@@ -109,34 +94,30 @@ def dataproc_train_op(
 
 ```
 
-The function must return a dsl.ContainerOp from the
-[XGBoost Spark pipeline sample](https://github.com/kubeflow/pipelines/blob/master/samples/core/xgboost_training_cm/xgboost_training_cm.py).
+函数必须返回一个 dsl.ContainerOp，来自
+[XGBoost Spark 流水线示例](https://github.com/kubeflow/pipelines/blob/master/samples/core/xgboost_training_cm/xgboost_training_cm.py)。
 
-Note:
+注意：
 
-* Each component must inherit from 
-  [`dsl.ContainerOp`](https://github.com/kubeflow/pipelines/blob/master/sdk/python/kfp/dsl/_container_op.py).
-* Values in the `arguments` list that's used by the `dsl.ContainerOp` constructor above must be either Python scalar types (such as `str` and ` int`) or [`dsl.PipelineParam`](https://github.com/kubeflow/pipelines/blob/master/sdk/python/kfp/dsl/_pipeline_param.py) types. Each `dsl.PipelineParam` represents a parameter whose value is usually only known at run time. The value is 
-  either provided by the user at pipeline run time or received as an output from an upstream component. 
-* Although the value of each `dsl.PipelineParam` is only available at run time,
-  you can still use the parameters inline in the `arguments` by using `%s`
-  variable substitution. At run time the argument contains the value of the 
-  parameter. 
-* `file_outputs` is a mapping between labels and local file paths. In the above 
-  example, the content of `/output.txt` contains the string output of the 
-  component. To reference the output in code:
+* 每个组件都必须继承自
+  [`dsl.ContainerOp`](https://github.com/kubeflow/pipelines/blob/master/sdk/python/kfp/dsl/_container_op.py)。
+* 上面的 `dsl.ContainerOp` 构造器使用的 `参数` 列表的值必须是 Python 标量类型（例如 `str` 和 ` int`）或
+  [`dsl.PipelineParam`](https://github.com/kubeflow/pipelines/blob/master/sdk/python/kfp/dsl/_pipeline_param.py)
+  类型。每一个 `dsl.PipelineParam` 表示一个值通常只有在运行时才知道的参数。该值既可以在流水线运行时由用户提供，也可以接受上游组件的输出。
+* 尽管每个 `dsl.PipelineParam` 的值只有在运行时才有效，你仍然可以通过 `%s` 变量替换来将内联形式参数作为 `实参` 使用。运行时实参中包含了形参的值。
+* `file_outputs` 是标签和本地文件路径的映射。在上述示例中，`/output.txt` 的内容包括了组件的字符串输出。如果要在在代码中引用输出：
 
     ```python
     op = dataproc_train_op(...)
     op.outputs['label']
     ```
 
-    If there is only one output then you can also use `op.output`.
+    如果仅有一个输出那么你也可以使用 `op.output`。
 
 <a id="define-pipeline"></a>
-## Define your pipeline as a Python function
+## 将流水线定义为 Python 函数
 
-You must describe each pipeline as a Python function. For example:
+你必须将每个流水线描述成一个 Python 函数。例如：
 
 ```python
 @dsl.pipeline(
@@ -157,53 +138,41 @@ def xgb_train_pipeline(
 )
 ```
 
-Note:
+注意：
 
-* **@dsl.pipeline** is a required decoration including the `name` and 
-  `description` properties.
-* Input arguments show up as pipeline parameters on the Kubeflow Pipelines UI. 
-  As a Python rule, positional arguments appear first, followed by keyword 
-  arguments.
-* Each function argument is of type 
-  [`dsl.PipelineParam`](https://github.com/kubeflow/pipelines/blob/master/sdk/python/kfp/dsl/_pipeline_param.py). 
-  The default values should all be of that type. The default values show up in 
-  the Kubeflow Pipelines UI but the user can override them.
+* **@dsl.pipeline** 是必须的装饰，包含 `名称` 和 `描述` 属性。
+* 输入参数在 Kubeflow Pipelines UI 中显示为流水线参数。作为 Python 规则，位置参数在前，接着是关键字参数。
+* 每个函数参数的类型都是
+  [`dsl.PipelineParam`](https://github.com/kubeflow/pipelines/blob/master/sdk/python/kfp/dsl/_pipeline_param.py)。
+  缺省值均为该类型。缺省值显示在 Kubeflow Pipelines UI 中，但是用户可以覆盖它们。
 
 
-See the full code in the
-[XGBoost Spark pipeline sample](https://github.com/kubeflow/pipelines/blob/master/samples/core/xgboost_training_cm/xgboost_training_cm.py).
+查看
+[XGBoost Spark 流水线示例](https://github.com/kubeflow/pipelines/blob/master/samples/core/xgboost_training_cm/xgboost_training_cm.py)
+的完整代码。
 
-## Compile the pipeline
+## 编译流水线
 
-After defining the pipeline in Python as described above, you must compile the 
-pipeline to an intermediate representation before you can submit it to the 
-Kubeflow Pipelines service. The intermediate representation is a workflow 
-specification in the form of a YAML file compressed into a 
-`.tar.gz` file.
+如上所述在 Python 中定义了流水线后，你必须先将流水线编译成中间表示形式，然后才能提交到 Kubeflow Pipelines 服务。
+中间表示是一个被压缩成 `.tar.gz` 格式文件的 YAML 格式的工作流说明。
 
-Use the `dsl-compile` command to compile your pipeline:
+使用 `dsl-compile` 命令来编译你的流水线：
 
 ```bash
 dsl-compile --py [path/to/python/file] --output [path/to/output/tar.gz]
 ```
 
-## Deploy the pipeline
+## 部署流水线
 
-Upload the generated `.tar.gz` file through the Kubeflow Pipelines UI. See the
-guide to [getting started with the UI](/docs/pipelines/pipelines-quickstart).
+通过 Kubeflow Pipelines UI 上传生成的 `.tar.gz`。参见指南
+[UI 入门](/docs/pipelines/pipelines-quickstart)。
 
-## Next steps
+## 下一步
 
-* Build a [reusable component](/docs/pipelines/sdk/component-development/) for
-  sharing in multiple pipelines.
-* Learn more about the 
-  [Kubeflow Pipelines domain-specific language (DSL)](/docs/pipelines/sdk/dsl-overview/),
-  a set of Python libraries that you can use to specify ML pipelines.
-* See how to [export metrics from your 
-  pipeline](/docs/pipelines/metrics/pipelines-metrics/).
-* Visualize the output of your component by
-  [adding metadata for an output 
-  viewer](/docs/pipelines/metrics/output-viewer/).
-* For quick iteration, 
-  [build lightweight components](/docs/pipelines/sdk/lightweight-python-components/)
-  directly from Python functions.
+* 构建 [可复用组件](/docs/pipelines/sdk/component-development/) 来在多个流水线之间共享。
+* 了解更多关于 
+  [Kubeflow Pipelines 领域特定语言（DSL）](/docs/pipelines/sdk/dsl-overview/) 的内容，
+  一组可以用来创建机器学习工作流的 Python 库。
+* 查看如何 [从流水线中导出指标](/docs/pipelines/metrics/pipelines-metrics/)。
+* 通过 [为输出查看器添加元数据](/docs/pipelines/metrics/output-viewer/) 来可视化你的组件输出。
+* 直接从 Python 函数 [构建轻量级组件](/docs/pipelines/sdk/lightweight-python-components/) 以快速迭代。
