@@ -1,74 +1,61 @@
 +++
-title = "Create Reusable Components"
-description = "A detailed tutorial on creating components that you can use in various pipelines"
+title = "创建可复用组件"
+description = "有关创建可在各种流水线中使用的组件的详细教程"
 weight = 40
 +++
 
-This page describes how to author a reusable component that you can
-load and use as part of a pipeline.
+本页描述如何编写可复用的组件以便你可以将它作为流水线的一部分加载并使用。
 
-If you're new to
-pipelines, see the conceptual guides to [pipelines](/docs/pipelines/concepts/pipeline/)
-and [components](/docs/pipelines/concepts/component/).
+如果你不了解流水线，查看 [流水线](/docs/pipelines/concepts/pipeline/)
+和 [组件](/docs/pipelines/concepts/component/) 的概念指南。
 
-This tutorial describes the manual way of writing a full component program (in any language) and a component definition for it.
-For quickly building component from a python function see [Build component from Python function](/docs/pipelines/sdk/lightweight-python-components/) and [Data Passing in Python components](https://github.com/kubeflow/pipelines/blob/master/samples/tutorials/Data%20passing%20in%20python%20components.ipynb).
+本教程描述了手动编写完整的组件程序（使用任何语言）以及它的组件定义的方法。要通过 Python 函数快速构建组件请查看
+[通过 Python 函数构建组件](/docs/pipelines/sdk/lightweight-python-components/) 和
+[Python 组件中的数据传递](https://github.com/kubeflow/pipelines/blob/master/samples/tutorials/Data%20passing%20in%20python%20components.ipynb)。
 
-## Summary
+## 总结
 
-Below is a summary of the steps involved in creating and using a component:
+下面是创建和使用组件涉及的步骤的总结：
 
-1.  Write the program that contains your component's logic. The program must
-    use files and command-line arguments to pass data to and from the component.
-1.  Containerize the program.
-1.  Write a component specification in YAML format that describes the
-    component for the Kubeflow Pipelines system.
-1.  Use the Kubeflow Pipelines SDK to load your component, use it in a pipeline and run that pipeline.
+1.  编写包含你的组件逻辑的程序。该程序必须使用文件和命令行参数来与组件传递参数。
+1.  将程序容器化。
+1.  编写 YAML 格式的组件规范来描述 Kubeflow Pipelines 系统中的组件。
+1.  使用 Kubeflow Pipelines SDK 来加载组件，在流水线中使用它并运行该流水线。
 
-The rest of this page gives some explanation about input and output data, 
-followed by detailed descriptions of the above steps.
+本页面余下部分给出关于输入和输出数据的解释，接着是上述步骤的详细描述。
 
-## Components and data passing
+## 组件和数据传递
 
-The concept of component is very similar to the concept of a function.
-Every component can have inputs and outputs (which must be declared in the component specification).
-The component code takes the data passed to its inputs and produces the data for its outputs.
-A pipeline then connects component instances together by passing data from outputs of some components to inputs of other components.
-That's very similar to how a function calls other functions and passes the results between them.
-The Pipelines system handles the actual data passing while the components are responsible for consuming the input data and producing the output data.
+组件的概念和函数的概念非常相似。每个组件可以有输入和输出（必须在组件规范中声明）。组件代码从输入中读取数据并为输出生产的数据。
+接着流水线根据数据从某些组件的输出传递到某些组件的输入这一关系将这些组件实例连接起来。这和函数调用其它函数并在它们之间传递结果非常相似。
+流水线系统处理实际的数据传递而组件负责消费输入的数据并生产输出数据。
 
-## Passing the data to and from the containerized program
+## 往返于容器化程序的数据传递
 
-When creating a component you need to think about how the component
-will communicate with upstream and downstream components. That is, how it will consume
-the input data and produce the output data.
+创建组件时你需要思考组件如何与上游和下游的组件通信。也就是说，它如何消费输入数据和生产输出数据。
 
-### Producing data
+### 生产数据
 
-To output any piece of data, the component program must write the output data to some location and inform the system
-about that location so that the system can pass the data between steps.
-The program should accept the paths for the output data as command-line arguments. That is, you should not hardcode the paths.
+要生产任何的数据，组件程序都必须将输出数据写到某个位置并告知系统该位置以便系统可以在步骤间传递数据。
+程序必须接受将输出数据的位置作为命令行参数。也就是说，你不能硬编码路径。
 
-#### Advanced: Producing data in an external system
+#### 进阶：在外部系统中生产数据
 
-In some scenarios, the goal of the component is to create some data object in an external service (for example a BigQuery table).
-In this case the component program should do that and then output some identifier of the produced data location (for example BigQuery table name) instead of the data itself.
-This scenario should be limited to cases where the data must be put into external system instead of keeping it inside the Kubeflow Pipelines system.
-The class of components where this behavior is common is exporters (for example "upload data to GCS").
-Note that the Pipelines system cannot provide consistency and reproducibility guarantees for the data outside of its control.
+在某些场景下，组件的目的是在某些外部服务中创建数据对象（例如 BigQuery 表）。在这种情况下，组件程序在完成工作后应该输出生产的数据的位置标识（例如
+BigQuery 表名）而不是数据本身。该场景应该被限制在数据必须被放置在外部系统的情况下而不是在 Kubeflow Pipelines 系统中。组件的类别通常是
+exporter（例如“上传数据到 GCS”）。注意流水线系统不能为超出其控制范围的数据提供一致性和可复现能力保障。
 
-### Consuming data
+### 消费数据
 
-There are two main ways a command-line program usually consumes data:
+命令行程序主要有两种常见的数据消费方式：
 
-* Small pieces of data are usually passed as command-line arguments: `program.py --param1 100`.
-* Bigger data or binary data is usually stored in files and then the file paths are passed to the program: `program.py --data1 /inputs/data1.txt`. The system needs to be aware about the need to put some data into files and pass their paths to the program.
+* 少部分的数据通常通过命令行参数传递：`program.py --param1 100`。
+* 大量的数据或二进制数据通常存储在文件中然后将文件的路径传递给程序：`program.py --data1 /inputs/data1.txt`。
+  系统需要意识到将数据放入文件中并将它们的路径传递给程序的需求。
 
-## Writing the program code
+## 编写程序代码
 
-This section describes an example program that has two inputs (for small and 
-large pieces of data) and one output. The programming language in this example
-is Python 3.
+本节描述一个有两个输入（小规模数据和大规模数据）和一个输出的示例程序。示例中的编程语言是 Python 3。
 
 ### program.py
 
@@ -77,7 +64,7 @@ is Python 3.
 import argparse
 from pathlib import Path
 
-# Function doing the actual work (Outputs first N lines from a text file)
+# 完成实际工作的函数（输出一个文本文件的前 N 行）
 def do_work(input1_file, output1_file, param1):
   for x in range(param1):
     line = next(input1_file)
@@ -85,14 +72,14 @@ def do_work(input1_file, output1_file, param1):
       break
     _ = output1_file.write(line)
 
-# Defining and parsing the command-line arguments
+# 定义并编译命令行参数
 parser = argparse.ArgumentParser(description='My program description')
-parser.add_argument('--input1-path', type=str, help='Path of the local file containing the Input 1 data.') # Paths should be passed in, not hardcoded
+parser.add_argument('--input1-path', type=str, help='Path of the local file containing the Input 1 data.') # 路径应该被传入，而不是硬编码
 parser.add_argument('--param1', type=int, default=100, help='Parameter 1.')
-parser.add_argument('--output1-path', type=str, help='Path of the local file where the Output 1 data should be written.') # Paths should be passed in, not hardcoded
+parser.add_argument('--output1-path', type=str, help='Path of the local file where the Output 1 data should be written.') # 路径应该被传入，而不是硬编码
 args = parser.parse_args()
 
-# Creating the directory where the output file will be created (the directory may or may not exist).
+# 创建输出文件所在的目录（该目录可能存在也可能不存在）。
 Path(args.output1_path).parent.mkdir(parents=True, exist_ok=True)
 
 with open(args.input1_path, 'r') as input1_file:
@@ -100,7 +87,7 @@ with open(args.input1_path, 'r') as input1_file:
         do_work(input1_file, output1_file, args.param1)
 ```
 
-The command line invocation of this program is:
+调用该程序的命令行是：
 
 ```
 python3 program.py --input1-path <local file path to Input 1 data> \
@@ -108,29 +95,23 @@ python3 program.py --input1-path <local file path to Input 1 data> \
                    --output1-path <local file path for the Output 1 data>
 ```
 
-## Writing a Dockerfile to containerize your application
+## 编写 Dockerfile 来容器化你的应用
 
-You need a [Docker](https://docs.docker.com/get-started/) container image that 
-packages your program.
+你需要一个 [Docker](https://docs.docker.com/get-started/) 容器镜像来打包你的程序。
 
-The instructions on creating container images are not specific to Kubeflow
-Pipelines. To make things easier for you, this section provides some guidelines
-on standard container creation. You can use any procedure
-of your choice to create the Docker containers.
+创建容器镜像的指南并非是 Kubeflow Pipelines 特定的。为简单起见，本节提供的是创建标准容器的指南。
+你可以使用任意方法来创建 Docker 容器。
 
-Your [Dockerfile](https://docs.docker.com/engine/reference/builder/) must
-contain all program code, including the wrapper, and the dependencies (operating
-system packages, Python packages etc).  
+你的 [Dockerfile](https://docs.docker.com/engine/reference/builder/)
+必须包含所有的程序代码，包括包装程序和依赖（操作系统库、Python 包等）。 
 
-Ensure you have write access to a container registry where you can push
-the container image. Examples include 
-[Google Container Registry](https://cloud.google.com/container-registry/docs/) 
-and [Docker Hub](https://hub.docker.com/).
+确保你有一个镜像仓库的写权限以便你可以上传你的容器镜像。示例包括
+[Google Container Registry](https://cloud.google.com/container-registry/docs/)
+和 [Docker Hub](https://hub.docker.com/)。
 
-Think of a name for your container image. This guide uses the name
-`gcr.io/my-org/my-image'.
+给你的容器镜像去一个名称。本指南中使用的名称是 `gcr.io/my-org/my-image`。
 
-### Example Dockerfile
+### Dockerfile 示例
 
 ```
 FROM python:3.7
@@ -138,21 +119,17 @@ RUN python3 -m pip install keras
 COPY ./src /pipelines/component/src
 ```
 
-Create a `build_image.sh` script (see example below) to build the container
-image based on the Dockerfile and push the container image to some container
-repository.
+创建一个 `build_image.sh` 脚本（见下面的示例）来根据 Dockerfile 构建容器镜像并将镜像上传到某个镜像仓库中。
 
-Run the `build_image.sh` script to build the container image based on the Dockerfile
-and push it to your chosen container repository. 
+运行 `build_image.sh` 脚本来根据 Dockerfile 构建容器镜像并将它上传到所选的镜像仓库中。
 
-Best practice: After pushing the image, get the strict image name with digest,
-and use the strict image name for reproducibility.
+最佳实践：上传完镜像后，获取镜像的包含摘要的严格名称，并使用严格名称来进行复现。
 
-### Example build_image.sh:
+### build_image.sh 示例：
 
 ```bash
 #!/bin/bash -e
-image_name=gcr.io/my-org/my-image # Specify the image name here
+image_name=gcr.io/my-org/my-image # 在这里指定镜像名称
 image_tag=latest
 full_image_name=${image_name}:${image_tag}
 
@@ -160,45 +137,40 @@ cd "$(dirname "$0")"
 docker build -t "${full_image_name}" .
 docker push "$full_image_name"
 
-# Output the strict image name (which contains the sha256 image digest)
+# 输出镜像的严格名称（包含来镜像的 sha256 摘要值）
 docker inspect --format="{{index .RepoDigests 0}}" "${IMAGE_NAME}"
 ```
 
-Make your script executable:
+让你的脚本可执行：
 
 ```
 chmod +x build_image.sh
 ```
 
-## Writing your component definition file
+## 编写组件定义文件
 
-To create a component from your containerized program you need to write component specification in YAML format that describes the
-component for the Kubeflow Pipelines system.
+要用你的容器化程序创建组件你需要编写描述组件在 Kubeflow Pipelines 系统中的 YAML 格式的组件规范。
 
-For the complete definition of a Kubeflow Pipelines component, see the
-[component specification](/docs/pipelines/reference/component-spec/).
-However, for this tutorial you don't need to know the full schema of the 
-component specification. The tutorial provides enough information for the 
-relevant the components.
+有关 Kubeflow Pipelines 组件的完整定义，参见 [组件规范](/docs/pipelines/reference/component-spec/)。
+不过，对于本教程你无需了解组件规范的全部内容。本教程提供了足够的组件相关的信息。
 
-Start writing the component definition (`component.yaml`) by specifying your
-container image in the component's implementation section:
+通过在组件的实现一节中指定容器镜像来开始编写组件定义（`component.yaml`）：
 
 ```
 implementation:
   container:
-    image: gcr.io/my-org/my-image@sha256:a172..752f # Name of a container image that you've pushed to a container repo.
+    image: gcr.io/my-org/my-image@sha256:a172..752f # 你推到镜像仓库中的容器镜像的名称
 ```
 
-Complete the component's implementation section based on your program:  
+基于你的程序来完成组件实现一节：
  
 ```
 implementation:
   container:
     image: gcr.io/my-org/my-image@sha256:a172..752f
-    # command is a list of strings (command-line arguments). 
-    # The YAML language has two syntaxes for lists and you can use either of them. 
-    # Here we use the "flow syntax" - comma-separated strings inside square brackets.
+    # 命令是一个字符串（命令行参数）列表。
+    # 你可以使用 YAML 语言中两种列表语法中的任意一种。
+    # 这里使用的是“流式”语法 —— 逗号分割的字符串放在方括号中。
     command: [
       python3, /kfp/component/src/program.py, # Path of the program inside the container
       --input1-path, <local file path for the Input 1 data>,
@@ -207,49 +179,33 @@ implementation:
     ]
 ```
 
-The `command` section still contains some dummy placeholders (in angle
-brackets). Let's replace them with real placeholders. A *placeholder* represents
-a command-line argument that is replaced with some value or path before the
-program is executed. In `component.yaml`, you specify the placeholders using
-YAML's mapping syntax to distinguish them from the verbatim strings. There are
-three placeholders available:
+`command` 一节依然包含了一些虚设的占位符（在尖括号中）。*占位符* 表示一个在程序执行前会被替换成某个值或路径的命令行参数。在 `component.yaml`
+中，你可以使用 YAML 的映射语法指定占位符从而和逐字字符串区别开。有三种占位符可用：
 
-*   `{inputValue: Some input name}`   
-    This placeholder is replaced with the **value** of the argument to the
-    specified input. This is useful for small pieces of input data.
-*   `{inputPath: Some input name}`   
-    This placeholder is replaced with the auto-generated **local path** where the
-    system will put the input data passed to the component during the pipeline run.
-    This placeholder instructs the system to write the input argument data to a file and pass the path of that data file to the component program.
-*   `{outputPath: Some output name}`   
-    This placeholder is replaced with the auto-generated **local path** where the
-    program should write its output data. This instructs the system to read the
-    content of the file and store it as the value of the specified output.
+*   `{inputValue: 某个输入值}`   
+    该占位符会被替换为指定输入的参数 **值** 。对于少量输入数据很有用。
+*   `{inputPath: 某个输入值}`   
+    该占位符会被替换成自动生成的 **本地路径** ，系统会在流水线运行时将输入数据传到组件中。
+    该占位符指示系统将输入参数的数据写入到一个文件中，然后将该数据文件的路径传递到组件程序中。
+*   `{outputPath: 某个输出值}`   
+    该占位符会被替换成自动生成的 **本地路径** ，程序应该将输出数据写入路径对应的文件中。它会指示系统读取文件中的内容然后将它作为特定的输出值存储。
 
-In addition to putting real placeholders in the command line, you need to add
-corresponding input and output specifications to the inputs and outputs
-sections. The input/output specification contains the input name, type,
-description and default value. Only the name is required. The input and output
-names are free-form strings, but be careful with the YAML syntax and use quotes
-if necessary. The input/output names do not need to be the same as the
-command-line flags which are usually quite short.  
+除了将真正的占位符放在命令行中之外，你需要在输入和输出一节中添加相应的输入和输出规范。输入/输出规范包含了输入名称、类型、描述和缺省值。仅有名称是必需的。
+输入和输出名称是任意形式的字符串，但是需要注意 YAML 语法并在必要的时候使用引号。输入/输出名称不必与通常很短的命令行标志相同。
    
-Replace the placeholders as follows:
+替换占位符如下所示：
 
-+   Replace `<local file path for the Input 1 data>` with `{inputPath: Input 1}` and
-    add `Input 1` to the `inputs` section.
-    them in as command-line arguments.
-+   Replace `<value of Param1 input>` with `{inputValue: Parameter 1}` and add
-    `Parameter 1` to the `inputs` section. Integers are small, so we're passing
-    them in as command-line arguments.
-+   Replace `<local file path for the Output 1 data>` with `{outputPath: Output 1}`
-    and add `Output 1` to the `outputs` section.
++   将 `<local file path for the Input 1 data>` 替换成 `{inputPath: Input 1}` 并在 `inputs` 一节中添加 `Input 1`。
+    字符串很小，所以作为命令行参数传递。
++   将 `<value of Param1 input>` 替换成 `{inputValue: Parameter 1}` 并在 `inputs` 一节中添加 `Parameter 1`。
+    整型数值很小，所以作为命令行参数传递。
++   将 `<local file path for the Output 1 data>` 替换成 `{outputPath: Output 1}`
+    并在 `outputs` 一节中添加 `Output 1`。 
 
-After replacing the placeholders and adding inputs/outputs, your
-`component.yaml` looks like this:
+替换完占位符并添加输入/输出后，你的 `component.yaml` 会是这样：
 
 ```
-inputs: #List of input specs. Each input spec is a map.
+inputs: # 输入规范列表。每一个输入规范是一个映射。
 - {name: Input 1}
 - {name: Parameter 1}
 outputs:
@@ -261,31 +217,29 @@ implementation:
       python3, /pipelines/component/src/program.py,
 
       --input1-path,
-      {inputPath: Input 1}, # Refers to the "Input 1" input
+      {inputPath: Input 1}, # 引用自输入中的 "Input 1"
 
       --param1,
-      {inputValue: Parameter 1}, # Refers to the "Parameter 1" input
+      {inputValue: Parameter 1}, # 引用自输入中的 "Parameter 1"
 
       --output1-path,
-      {outputPath: Output 1}, # Refers to the "Output 1" output
+      {outputPath: Output 1}, # 引用自输出中的 "Output 1"
     ]
 ```
 
-The above component specification is sufficient, but you should add more
-metadata to make it more useful. The example below includes the following
-additions:
+上面的组件规范是充分的，但是你需要添加更多的元数据来使它更有用。下面的示例包含了如下补充：
 
-* Component name and description.
-* For each input and output: description, default value, and type.  
+* 组件名称和描述。
+* 针对每一个输入和输出：描述、缺省值和类型。
    
-Final version of `component.yaml`:  
+最终版本的 `component.yaml`：
 
 ```
 name: Do dummy work
 description: Performs some dummy work.
 inputs:
 - {name: Input 1, type: GCSPath, description='Data for Input 1'}
-- {name: Parameter 1, type: Integer, default='100', description='Parameter 1 description'} # The default values must be specified as YAML strings.
+- {name: Parameter 1, type: Integer, default='100', description='Parameter 1 description'} # 缺省值必须指定为 YAML 字符串。
 outputs:
 - {name: Output 1, description='Output 1 data'}
 implementation:
@@ -299,84 +253,69 @@ implementation:
     ]
 ```
 
-## Build your component into a pipeline with the Kubeflow Pipelines SDK
+## 通过 Kubeflow Pipelines SDK 将组件构建到流水线中
 
-Here is a sample pipeline that shows how to load a component and use it to
-compose a pipeline.
+这是一个显示了如何加载组件并使用它来组成一个流水线的示例流水线。、
  
 ```python
 import kfp
-# Load the component by calling load_component_from_file or load_component_from_url
-# To load the component, the pipeline author only needs to have access to the component.yaml file.
-# The Kubernetes cluster executing the pipeline needs access to the container image specified in the component.
+# 通过调用 load_component_from_file 或 load_component_from_url 加载组件
+# 要加载组件，流水线作者只需要有访问 component.yaml 文件的权限。
+# Kubernetes 集群执行流水线需要有访问组件中指定的容器镜像的权限。
 dummy_op = kfp.components.load_component_from_file(os.path.join(component_root, 'component.yaml')) 
 # dummy_op = kfp.components.load_component_from_url('http://....../component.yaml')
 
-# Load two more components for importing and exporting the data:
+# 加载另外两个用于导入和导出数据的组件：
 download_from_gcs_op = kfp.components.load_component_from_url('http://....../component.yaml')
 upload_to_gcs_op = kfp.components.load_component_from_url('http://....../component.yaml')
 
-# dummy_op is now a "factory function" that accepts the arguments for the component's inputs
-# and produces a task object (e.g. ContainerOp instance).
-# Inspect the dummy_op function in Jupyter Notebook by typing "dummy_op(" and pressing Shift+Tab
-# You can also get help by writing help(dummy_op) or dummy_op? or dummy_op??
-# The signature of the dummy_op function corresponds to the inputs section of the component.
-# Some tweaks are performed to make the signature valid and pythonic:
-# 1) All inputs with default values will come after the inputs without default values
-# 2) The input names are converted to pythonic names (spaces and symbols replaced
-#    with underscores and letters lowercased).
+# dummy_op 现在是一个接受组件输入的参数并生成一个任务对象（例如 ContainerOp 实例）的 “工厂函数”。
+# 在 Jupyter Notebook 中通过输入 "dummy_op(" 后按 Shift+Tab 键来检查 dummy_op 函数
+# 你还可以通过输入 help(dummy_op) 或 dummy_op? 或 dummy_op?? 来获取帮助
+# dummy_op 函数的签名对应了组件的输入一节。
+# 执行一些调整以使签名有效且符合 Python 规范：
+# 1) 所有有缺省值的输入跟在没有缺省值的输入之后
+# 2) 输入名称被转换成符合 Python 规范的名称（空格和符号替换成下划线并且字母小写）。
 
-# Define a pipeline and create a task from a component:
+# 定义一个流水线并从组件创建任务：
 def my_pipeline():
     dummy1_task = dummy_op(
-        # Input name "Input 1" is converted to pythonic parameter name "input_1"
+        # 输入名称 "Input 1" 被转换成符合 Python 规范的参数名称 "input_1"
         input_1="one\ntwo\nthree\nfour\nfive\nsix\nseven\neight\nnine\nten",
         parameter_1='5',
     )
-    # The outputs of the dummy1_task can be referenced using the
-    # dummy1_task.outputs dictionary: dummy1_task.outputs['output_1']
-    # ! The output names are converted to pythonic ("snake_case") names.
+    # dummy1_task 的输出可以使用 dummy1_task.outputs 字典引用：dummy1_task.outputs['output_1']
+    # ! 输出名称被转换成符合 Python 规范（”蛇形命名法“）的名称。
 
-# This pipeline can be compiled, uploaded and submitted for execution.
+# 本流水线可以被编译、上传和提交以执行。
 kfp.Client().create_run_from_pipeline_func(my_pipeline, arguuments={})
 ```
 
-## Organizing the component files
+## 组织组件文件
 
-This section provides a recommended way to organize the component files. There
-is no requirement that you must organize the files in this way. However, using
-the standard organization makes it possible to reuse the same scripts for
-testing, image building and component versioning.  
-See this
-[sample component](https://github.com/kubeflow/pipelines/tree/master/components/sample/keras/train_classifier)
-for a real-life component example.
+本节提供了一种组织组件文件的推荐方法。你并不是一定要按这种方式组织文件。然后，使用标准的组织方式可以复用相同的脚本来进行测试、镜像构建和组件的版本控制。
+有关真实的组件示例，参见
+[示例组件](https://github.com/kubeflow/pipelines/tree/master/components/sample/keras/train_classifier)。
 
 ```
 components/<component group>/<component name>/
 
-    src/*            #Component source code files
-    tests/*          #Unit tests
-    run_tests.sh     #Small script that runs the tests
-    README.md        #Documentation. Move to docs/ if multiple files needed
+    src/*            # 组件源码文件
+    tests/*          # 单元测试
+    run_tests.sh     # 运行测试的脚本
+    README.md        # 文档。如果需要多个文件则移到 docs/ 目录中。
 
-    Dockerfile       #Dockerfile to build the component container image
-    build_image.sh   #Small script that runs docker build and docker push
+    Dockerfile       # 构建组件容器镜像的 Dockerfile
+    build_image.sh   # 运行  docker build 和 docker push 的脚本
 
-    component.yaml   #Component definition in YAML format
+    component.yaml   # YAML 格式的组件定义
 ```
 
-## Next steps
+## 下一步
 
-* Consolidate what you've learned by reading the 
-  [best practices](/docs/pipelines/sdk/best-practices) for designing and 
-  writing components.
-* For quick iteration, 
-  [build lightweight components](/docs/pipelines/sdk/lightweight-python-components/)
-  directly from Python functions.
-* See how to [export metrics from your 
-  pipeline](/docs/pipelines/metrics/pipelines-metrics/).
-* Visualize the output of your component by
-  [adding metadata for an output 
-  viewer](/docs/pipelines/metrics/output-viewer/).
-* Explore the [reusable components and other shared 
-  resources](/docs/examples/shared-resources/).
+* 通过阅读有关设计和编写组件的 [最佳实践](/docs/pipelines/sdk/best-practices) 来巩固所学知识。
+* 从 Python 函数直接 [构建轻量级组件](/docs/pipelines/sdk/lightweight-python-components/) 以便快速迭代。
+* 查看如何 [从流水线导出指标](/docs/pipelines/metrics/pipelines-metrics/)。
+* 通过 [为输出查看器添加元数据](/docs/pipelines/metrics/output-viewer/)
+  来可视化你的组件输出。
+* 浏览 [可复用组件和其它共享资源](/docs/examples/shared-resources/)。
