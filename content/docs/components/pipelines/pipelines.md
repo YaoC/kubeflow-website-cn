@@ -1,21 +1,15 @@
 +++
-title = "Pipelines"
-description = "Introduction to Kubeflow Pipelines"
+title = "流水线"
+description = "Kubeflow 流水线介绍"
 weight = 35
 +++
 
-Kubeflow Pipelines is a platform for building and deploying portable and
-scalable end-to-end ML workflows, based on containers.
+Kubeflow 流水线是一个基于容器进行构建和部署可移动和可扩展的端到端机器学习工作流的平台。
 
-The Kubeflow Pipelines platform has the following goals:
+Kubeflow 流水线平台有下列目标：
 
-* End-to-end orchestration: enabling and simplifying the orchestration of
-  machine learning pipelines.
-* Easy experimentation: making it easy for you to try numerous ideas and 
-  techniques and manage your various trials/experiments.
-* Easy re-use: enabling you to re-use components and pipelines to quickly 
-  cobble together end-to-end solutions, without having to rebuild each time.
+* 端到端编排：启用和简化机器学习流水线的编排。
+* 容易实验：让你尝试大量的想法和技术以及管理你不同的尝试和实验变得容易。
+* 容易复用：让你能复用组件和流水线去快速组合端到端的解决方案，而不用每次都去重新造轮子。
 
-  Read more in the 
-  [pipelines section](/docs/pipelines/pipelines-overview)
-  of the documentation.
+  在文档的[流水线部分](/docs/pipelines/pipelines-overview)阅读更多内容。
