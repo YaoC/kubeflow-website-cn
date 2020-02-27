@@ -1,9 +1,7 @@
 +++
 title = "Jupyter Notebooks"
-description = "Using Jupyter notebooks in Kubeflow"
+description = "在 Kubeflow 中使用 Jupyter notebooks"
 weight = 10
 +++
 
-Your Kubeflow deployment includes support for spawning and managing Jupyter
-notebooks. See how to [set up your notebooks](/docs/notebooks/setup/) and
-[explore more notebook functionality](/docs/notebooks/).
+你的 Kubeflow 部署包含对启动和管理 Jupyter notebooks 的支持。参考如何[安装你的 notebooks](/docs/notebooks/setup/) 以及[探索更多 notebook 功能](/docs/notebooks/)。

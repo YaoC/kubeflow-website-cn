@@ -1,20 +1,21 @@
 +++
-title = "Troubleshooting Deployments on Azure AKS"
-description = "Help diagnose and fix issues you may encounter in your Kubeflow deployment"
+title = "在 Azure AKS 上解决部署故障"
+description = "帮助诊断及解决你可能在你的 Kubeflow 部署上遇到的问题"
 weight = 100
 +++
 
-### Jupyter Notebook ‘is not a valid page’ when accessing notebook
-Restarting the ambassador pods will often fix this issue:
-`kubectl delete pods -l service=ambassador`
+### 当访问 notebook 时，Jupyter Notebook 报错：'is not a valid page'
+
+重启 ambassador 的 pod 一般都能解决该问题：`kubectl delete pods -l service=ambassador`
 
 ### The client does not have authorization to perform action...
-This is likely an issue with ensuring your subscriptions are correctly setup. To fix the issue, list your subscriptions and then change the active subscription.
+
+这个可能是在确认你的订阅是否正确设置时引发的问题。要解决该问题，列出你的订阅列表然后改变活跃的订阅。
 
 ```
-#list subscription 
+# 列出订阅列表
 az account list --output table 
 
-#change the active subscription 
+# 改变活跃的订阅
 az account set --subscription "My Demos"
 ```

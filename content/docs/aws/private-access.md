@@ -1,16 +1,16 @@
 +++
-title = "Private Access"
-description = "How to create private EKS clusters"
+title = "私密访问"
+description = "如何创建私有 EKS 集群"
 weight = 80
 +++
 
-This section helps you to enable private access for your Amazon EKS cluster's Kubernetes API server endpoint and completely disable public access so that it's not accessible from the internet.
+本章节帮助你在你的亚马逊 EKS 集群的 Kubernetes API 服务端点开启私密访问，并且完全禁止公开访问以便它不能被公网访问到。
 
-## Enable Private Access for your cluster's API server endpoint
+## 为你的集群 API 服务端点开启私密访问
 
-You can enable private access to the Kubernetes API server so that all communication between your worker nodes and the API server stays within your VPC. You can also completely disable public access to your API server so that it's not accessible from the internet.
+你可以给 Kubernetes API 服务器开启私密访问，这样在你的工作节点和 API 服务器之间的所有通讯都会限定在你的 VPC 中。你也可以完全禁用公网访问你的 API 服务器以便它不能被公网访问到。
 
-You can enable private access in `${KF_DIR}/aws_config/cluster_features.sh`.
+你可以在 `${KF_DIR}/aws_config/cluster_features.sh` 中开启私密访问：
 
 ```shell
 PRIVATE_LINK=false
@@ -18,11 +18,10 @@ ENDPOINT_PUBLIC_ACCESS=true
 ENDPOINT_PRIVATE_ACCESS=false
 ```
 
-By default, this API server endpoint is public to the internet (`ENDPOINT_PUBLIC_ACCESS=true`) , and access to the API server is secured using a combination of [AWS Identity and Access Management (IAM)](https://aws.amazon.com/iam/) and native Kubernetes [Role Based Access Control](https://kubernetes.io/docs/admin/authorization/rbac/) (`ENDPOINT_PRIVATE_ACCESS=false`).
+默认情况下，API 服务端点是对互联网开放的 (`ENDPOINT_PUBLIC_ACCESS=true`)，同时访问 API 服务器是安全的，它使用了集成的 [AWS 身份访问管理系统 (IAM)](https://aws.amazon.com/iam/) 和原生的 Kubernetes [基于角色的访问控制系统](https://kubernetes.io/docs/admin/authorization/rbac/) (`ENDPOINT_PRIVATE_ACCESS=false`)。
 
-You can enable private access to the Kubernetes API server so that all communication between your worker nodes and the API server stays within your VPC (`ENDPOINT_PRIVATE_ACCESS=true`). You can also completely disable public access to your API server so that it's not accessible from the internet (`ENDPOINT_PUBLIC_ACCESS=false`). In this case, you need to have an instance inside your VPC to talk with your Kubernetes API server.
+你可以给 Kubernetes API 服务器开启私密访问，这样在你的工作节点和 API 服务器之间的所有通讯都会限定在你的 VPC 中 (`ENDPOINT_PRIVATE_ACCESS=true`)。你也可以完全禁用公网访问你的 API 服务器以便它不能被公网访问到 (`ENDPOINT_PUBLIC_ACCESS=false`)。在这种情况下，你需要在你的 VPC 中有一个实例去跟你的 Kubernetes API 服务器通讯。
 
-Note: You may see `InvalidParameterException` if you have invalid combination.
+注意：如果你集成的方式不正确的话你可能会看到 `InvalidParameterException` 错误。
 
-Please check [Amazon EKS Cluster Endpoint Access Control](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html) for more details.
-
+请查看 [Amazon EKS 集群端点访问控制](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html) 以获取更多细节。

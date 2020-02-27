@@ -1,12 +1,13 @@
 +++
-title = "Logging"
-description = "Add logging support for kubeflow"
+title = "日志"
+description = "为 Kubeflow 添加日志支持"
 weight = 70
 +++
 
-Amazon EKS control plane logging provides audit and diagnostic logs directly from the Amazon EKS control plane to [CloudWatch](https://aws.amazon.com/cloudwatch/) Logs in your account. These logs make it easy for you to secure and run your clusters. You can select the exact log types you need, and logs are sent as log streams to a group for each Amazon EKS cluster in [CloudWatch](https://aws.amazon.com/cloudwatch/).
+亚马逊 EKS 控制平面日志系统直接提供审计和诊断日志，这些日志来自于从亚马逊 EKS 控制平面到 [CloudWatch](https://aws.amazon.com/cloudwatch/) 记录的你的账户的日志。
+这些日志让你安全运行你的集群变得容易。你可以精确地选择你想要的日志类型，日志就会被作为日志流发送到一个包含每个在 [CloudWatch](https://aws.amazon.com/cloudwatch/) 中的亚马逊 EKS 集群组中。
 
-If you look at `${KF_DIR}/aws_config/cluster_features.yaml`, you will see following configuration:
+如果你看一下 `${KF_DIR}/aws_config/cluster_features.yaml`，你可以看到以下配置：
 
 ```shell
 CONTROL_PLANE_LOGGING=false
@@ -15,12 +16,11 @@ CONTROL_PLANE_LOGGING_COMPONENTS=api,audit,authenticator,controllerManager,sched
 WORKER_NODE_GROUP_LOGGING=false
 ```
 
-By default, cluster control plane logs and worker node group logs aren't sent to CloudWatch Logs. You must enable each log type individually to send logs for your cluster.
+默认情况下，集群控制平面日志和工作节点组日志不会被发送到 CloudWatch 日志中。你必须逐个开启每个日志类型从而能为你的集群发送日志。
 
+### 控制平面日志
 
-### Control Plane Logging
-
-You can update `CONTROL_PLANE_LOGGING=true` to enable control plane logs and customize the components you want to collect logs from. Only these components are available and you have to use command between components.
+你可以更新 `CONTROL_PLANE_LOGGING=true` 来开启控制平面日志以及自定义你想要收集日志的组件。只有以下这些组件可用，你只能在这些组件中使用命令。
 
 * api
 * audit
@@ -28,12 +28,12 @@ You can update `CONTROL_PLANE_LOGGING=true` to enable control plane logs and cus
 * controllerManager
 * scheduler
 
-Open the [CloudWatch Console](https://console.aws.amazon.com/cloudwatch/home#logs:prefix=/aws/eks). Choose the cluster that you want to view logs for. The log group name format is `/aws/eks/${AWS_CLUSTER_NAME}/cluster`.
+打开 [CloudWatch 控制台](https://console.aws.amazon.com/cloudwatch/home#logs:prefix=/aws/eks)，选择你想要查看日志的集群。日志组名称格式为 `/aws/eks/${AWS_CLUSTER_NAME}/cluster`。
 
-> Note: If you set `CONTROL_PLANE_LOGGING=false`, the value of `CONTROL_PLANE_LOGGING_COMPONENTS` will not be used.
+> 注意：如果你设置了 `CONTROL_PLANE_LOGGING=false`，`CONTROL_PLANE_LOGGING_COMPONENTS` 的值将不会被使用。
 
-### Worker Node Group Logging
+### 工作节点组日志
 
-You can update `WORKER_NODE_GROUP_LOGGING=true` to enable worker node group logs and all pod logs are sent to CloudWatch.  The log group name format is `/eks/${AWS_CLUSTER_NAME}/containers`.
+你可以更新 `WORKER_NODE_GROUP_LOGGING=true` 来开启工作节点组日志，所有的 pod 日志都会被发送到 CloudWatch。日志组名称格式为 `/eks/${AWS_CLUSTER_NAME}/containers`。
 
-If you want to change logs setting after you have created your cluster, please check [here](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html) for details.
+如果在你已经创建集群后想要改变日志设置，请查看 [这里](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html) 了解细节。
